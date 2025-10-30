@@ -1,5 +1,5 @@
 displayName = More Obtaining Tooltips 物品获取提示
 author = Guida
-version = 0.3
+version = 0.4
 side = client
 includeSource = true

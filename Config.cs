@@ -42,6 +42,9 @@ namespace MoreObtainingTooltips
         [DefaultValue(typeof(Color), "180, 180, 180, 255")]
         public Color TooltipColor { get; set; }
 
+        [DefaultValue(true)]
+        public bool ShowShopCondition { get; set; } = true;
+
         public TooltipSettings Crafting { get; set; } = new();
         public TooltipSettings Shops { get; set; } = new();
         public TooltipSettings Drops { get; set; } = new();

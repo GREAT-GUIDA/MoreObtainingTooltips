@@ -176,6 +176,11 @@ Configs: {
 			Label: 物品显示模式
 			Tooltip: ""
 		}
+
+		ShowShopCondition: {
+			Label: 展示出售条件
+			Tooltip: ""
+		}
 	}
 
 	TooltipShowMode: {

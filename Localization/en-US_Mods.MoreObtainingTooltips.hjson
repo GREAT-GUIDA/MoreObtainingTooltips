@@ -176,6 +176,11 @@ Configs: {
 			Label: Item Show Mode
 			Tooltip: ""
 		}
+
+		ShowShopCondition: {
+			Label: Show Shop Condition
+			Tooltip: ""
+		}
 	}
 
 	TooltipShowMode: {

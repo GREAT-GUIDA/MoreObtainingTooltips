@@ -27,13 +27,21 @@ namespace MoreObtainingTooltips {
                 IsHardmode = isHardmode;
             }
         }
+        public struct ShopSourceInfo {
+            public readonly int NpcId;
+            public readonly List<string> Conditions;
 
+            public ShopSourceInfo(int npcId, List<string> conditions) {
+                NpcId = npcId;
+                Conditions = conditions;
+            }
+        }
         public static Dictionary<int, List<int>> ShimmerSources { get; private set; }
         public static Dictionary<int, List<int>> DecraftSources { get; private set; }
         public static Dictionary<int, List<int>> DropSources { get; private set; }
         public static Dictionary<int, List<int>> GrabBagSources { get; private set; }
         public static Dictionary<int, List<int>> CraftingSources { get; private set; }
-        public static Dictionary<int, List<int>> ShopSources { get; private set; }
+        public static Dictionary<int, List<ShopSourceInfo>> ShopSources { get; private set; }
         public static Dictionary<int, List<int>> ChestSources { get; private set; }
         public static Dictionary<int, List<int>> CatchNPCSources { get; private set; }
         public static Dictionary<int, FishingInfo> FishingSources { get; private set; }
@@ -51,7 +59,7 @@ namespace MoreObtainingTooltips {
             DropSources = new Dictionary<int, List<int>>();
             GrabBagSources = new Dictionary<int, List<int>>();
             CraftingSources = new Dictionary<int, List<int>>();
-            ShopSources = new Dictionary<int, List<int>>();
+            ShopSources = new Dictionary<int, List<ShopSourceInfo>>();
             ChestSources = new Dictionary<int, List<int>>();
             CatchNPCSources = new Dictionary<int, List<int>>();
             FishingSources = new Dictionary<int, FishingInfo>();
@@ -179,21 +187,30 @@ namespace MoreObtainingTooltips {
                 if (shop.NpcType == 0) continue;
                 foreach (var entry in shop.ActiveEntries) {
                     if (!entry.Item.IsAir) {
-                        AddSource(ShopSources, entry.Item.type, shop.NpcType);
+                        var conditionTexts = entry.Conditions
+                            .Select(condition => condition.Description.Value)
+                            .Where(text => !string.IsNullOrEmpty(text))
+                            .ToList();
+
+                        var sourceInfo = new ShopSourceInfo(shop.NpcType, conditionTexts);
+
+                        if (!ShopSources.TryGetValue(entry.Item.type, out var sourceList)) {
+                            sourceList = new List<ShopSourceInfo>();
+                            ShopSources[entry.Item.type] = sourceList;
+                        }
+
+                        sourceList.Add(sourceInfo);
                     }
                 }
             }
 
             // --- Populate Chest Sources ---
-            // 只有在未从存档加载数据时才运行
             if (!_loadedChestSourcesFromTag) {
-                // ChestSources 此时应该是空的 (在 LoadWorldData 中清空)
                 for (int i = 0; i < Main.maxChests; i++) {
                     Chest chest = Main.chest[i];
                     if (chest == null) continue;
 
                     Tile tile = Main.tile[chest.x, chest.y];
-                    // 使用 IsAContainer 才能包含 mod chest (和梳妆台等)
                     if (tile == null || !TileID.Sets.IsAContainer[tile.type]) continue;
 
                     int style = TileObjectData.GetTileStyle(tile);
@@ -340,8 +357,7 @@ namespace MoreObtainingTooltips {
         }
 
         public static void InitializeFishingSources() {
-            FishingSources = new Dictionary<int, FishingInfo>
-            {
+            FishingSources = new Dictionary<int, FishingInfo>{
             // == Fish ==
             { ItemID.ArmoredCavefish, new FishingInfo("Uncommon", false, "Underground", "Cavern", "Underworld") },
             { ItemID.AtlanticCod, new FishingInfo("Common", false, "Snow") },

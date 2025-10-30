@@ -57,6 +57,36 @@ namespace MoreObtainingTooltips {
 
             return tooltipText.ToString();
         }
+
+        private string GenerateShopSourceTooltip(string format, List<ShopSourceInfo> sources, int maxCount) {
+            var distinctSources = sources.Distinct().ToList();
+            if (!distinctSources.Any()) return null;
+
+            var tooltipParts = new List<string>();
+            int countToShow = System.Math.Min(distinctSources.Count, maxCount);
+
+            for (int i = 0; i < countToShow; i++) {
+                var source = distinctSources[i];
+                string npcName = Lang.GetNPCNameValue(source.NpcId);
+
+                if (source.Conditions.Any() && Config.ShowShopCondition) {
+                    string conditionText = string.Join(", ", source.Conditions);
+                    tooltipParts.Add($"{npcName}({conditionText})");
+                } else {
+                    tooltipParts.Add(npcName);
+                }
+            }
+
+            string nameList = string.Join(", ", tooltipParts);
+            var tooltipText = new StringBuilder(string.Format(format, nameList));
+
+            if (distinctSources.Count > countToShow) {
+                tooltipText.Append($"… ({(distinctSources.Count - countToShow)} more)");
+            }
+
+            return tooltipText.ToString();
+        }
+
         private static string GetText(string key) => Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
@@ -102,8 +132,8 @@ namespace MoreObtainingTooltips {
                 TryAddMethod(Config.ChlorophyteExtractinator.MaxCount == 0 ? GetText("FromChlorophyteExtractinator") : GenerateItemSourceTooltip(GetText("ChlorophyteExtractedFrom"), chloroExtractSources, Config.ChlorophyteExtractinator.MaxCount));
 
             // Shops
-            if (Config.Shops.Enabled && ShopSources.TryGetValue(item.type, out var shopNpcs))
-                TryAddMethod(Config.Shops.MaxCount == 0 ? GetText("Purchasable") : GenerateNpcSourceTooltip(GetText("SoldBy"), shopNpcs, Config.Shops.MaxCount));
+            if (Config.Shops.Enabled && ShopSources.TryGetValue(item.type, out var shopSources))
+                TryAddMethod(Config.Shops.MaxCount == 0 ? GetText("Purchasable") : GenerateShopSourceTooltip(GetText("SoldBy"), shopSources, Config.Shops.MaxCount));
 
             // Drops
             if (Config.Drops.Enabled && DropSources.TryGetValue(item.type, out var npcSources))
