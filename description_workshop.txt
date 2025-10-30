@@ -1,0 +1,94 @@
+More Obtaining Tooltips
+
+Shows how to obtain an item in its tooltip.
+
+[b]Currently Supports:[/b]
+
+[*][b]Crafting:[/b] Displays the materials required to craft the item.
+[*][b]Sold by NPCs:[/b] Displays the NPCs that sell the item.
+[*][b]Dropped by NPCs:[/b] Displays the NPCs that drop the item.
+[*][b]Critter Catching:[/b] Displays the critters that can be caught to obtain the item.
+[*][b]Shimmer Transmutation:[/b] Displays the item that can be transmuted into this one.
+[*][b]Shimmer Decrafting:[/b] Displays the item that can be decrafted to obtain this one.
+[*][b]Grab Bags:[/b] Displays the grab bags that can contain the item.
+[*][b]Chests & Crates:[/b] Displays the chests where the item can be found.
+[*][b]Fishing:[/b] Displays the required biome and rarity to fish up the item (Currently Vanilla Only).
+[*][b]Extractinator:[/b] Displays the blocks that can be extracted to obtain the item.
+[*][b]Chlorophyte Extractinator:[/b] Displays the blocks that can be extracted to obtain the item.
+[*][b]Special Obtaining:[/b] Angler quests, Dye Trader trades, Party Girl gifts, shaking tree, breaking pots (Currently Vanilla Only).
+
+The display of all information is configurable.
+Unless specified as Vanilla Only, all information supports mods.
+
+[b]Future Plans:[/b]
+
+[*][b]Special Mod Support[/b]
+[*][b]Tile Breaking Drops[/b]
+[*]And other various obtaining methods
+
+Discord: https://discord.gg/eVR94prTmq
+
+Open source
+
+More Obtaining Tooltips 物品获取提示
+
+在物品的提示文本中，显示该物品的获取方式
+
+[b]目前支持：[/b]
+
+[*][b]制作：[/b]显示制作该物品所需的材料
+[*][b]NPC 出售：[/b]显示出售该物品的 NPC
+[*][b]NPC 掉落：[/b]显示掉落该物品的 NPC
+[*][b]生物捕捉：[/b]显示可以从中捕捉到该物品的生物
+[*][b]微光嬗变：[/b]显示可以嬗变为该物品的另一物品
+[*][b]微光分解：[/b]显示分解后可以得到该物品的另一物品
+[*][b]摸彩袋：[/b]显示可以开出该物品的摸彩袋
+[*][b]宝箱与木匣：[/b]显示可以找到该物品的宝箱
+[*][b]渔获：[/b]显示钓到该物品所需的生物群落和稀有度（目前仅支持原版）
+[*][b]提炼机：[/b]显示可以从提炼机中提炼出该物品的物块
+[*][b]叶绿提炼机 ：[/b]显示可以从叶绿提炼机中提炼出该物品的物块
+[*][b]特殊获取：[/b]渔夫任务，染料商兑换，派对女孩给予，摇树，打破罐子（目前仅支持原版）
+
+所有信息的显示均可配置
+除非写明仅支持原版，所有信息均支持mod
+
+[b]未来可能添加：[/b]
+
+[*][b]特殊Mod支持[/b]
+[*][b]挖掘图块掉落[/b]
+[*]或者别的什么乱七八糟获取途径
+
+Discord: https://discord.gg/eVR94prTmq
+
+开源
+
+
+Показывает способы получения предмета в его описании.
+
+[b]Поддерживается в данный момент:[/b]
+
+[*][b]Создание:[/b] Показывает материалы, обязательные для создания предмета.
+[*][b]Продажа у НИПа:[/b] Показывает существ, кем продаётся предмет.
+[*][b]Выпадение из существ:[/b] Показывает существ, из кого выпадает предмет.
+[*][b]Поимка существ:[/b] Показывает, каких существ нужно поймать, чтобы получить предмет.
+[*][b]Трансмутация в мерцании:[/b] Показывает предмет, который можно трансмутировать в этот.
+[*][b]Разборка в мерцании:[/b] Показывает предметы, которые будут приобретены при разборке этого предмета.
+[*][b]Добыча из мешочков:[/b] Показывает мешочки, из которых можно получить этот предмет.
+[*][b]Сундуки:[/b] Показывает сундуки, в которых можно найти этот предмет.
+[*][b]Рыбалка:[/b] Показывает рекомендуемый биом и редкость для ловли этого предмета (Пока только для ваниллы).
+[*][b]Обогатитель:[/b] Показывает блоки, которые можно обогатить для получения этого предмета.
+[*][b]Хлорофитовый обогатитель:[/b] Показывает блоки, которые можно обогатить для получения этого предмета.
+[*][b]Особая добыча:[/b] Задания рыбака, торговля с продавцом красителей, подарки тусовщицы (Пока только для ваниллы).
+
+Отображение всей информации является настраиваемым.
+Если не указывается, что это не только ванилла, то тип информации поддерживает другие моды.
+
+[b]Планы на будущее:[/b]
+
+[*][b]Особая поддержка модов[/b]
+[*][b]Добыча из плиток[/b]
+[*]И другие виды методов добычи
+
+Discord: https://discord.gg/eVR94prTmq
+
+Этот мод с открытым исходным кодом

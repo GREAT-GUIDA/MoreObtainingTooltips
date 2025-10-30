@@ -1,0 +1,208 @@
+Tooltips: {
+	Craftable: 可制作
+	Shimmered: 可微光嬗变获得
+	Decrafted: 可微光分解获得
+	Grabbed: 可从摸彩袋中获得
+	FoundInChests: 可在宝箱中找到
+	FromExtractinator: 可从提炼机获得
+	FromChlorophyteExtractinator: 可从叶绿提炼机获得
+	Purchasable: 可购买
+	Droppable: 可由NPC掉落
+	Catchable: 可捕捉
+	FishingCatch: 渔获
+	CraftedWith: 由 {0} 制作
+	ShimmeredFrom: 由 {0} 嬗变
+	DecraftedFrom: 由 {0} 分解
+	GrabbedFrom: 从 {0} 中获得
+	FoundIn: 在 {0} 中找到
+	ExtractedFrom: 在[i:997]中从 {0} 提炼
+	ChlorophyteExtractedFrom: 在[i:5296]中从 {0} 提炼
+	SoldBy: 由 {0} 出售
+	DroppedBy: 由 {0} 掉落
+	CatchedFrom: 从 {0} 处捕捉
+	# {0} = Rarity, {1} = Environment
+	FishingCatchDetails: 在 {1} 的 {0} 渔获
+	# Hint text
+	PressShiftHint: <按住 Shift 查看获取方式>
+	// Quests & NPCs
+	AnglerQuest: 渔夫任务奖励
+	DyeTraderQuest: 染料商任务奖励
+	PartyGirlGiven: 由派对女孩给予
+	// Shaking Trees
+	ShakingForestTree: 摇晃森林树获得
+	ShakingMahoganyTree: 摇晃红木树获得
+	ShakingEbonwoodTree: 摇晃乌木树获得
+	ShakingShadewoodTree: 摇晃暗影木树获得
+	ShakingPearlwoodTree: 摇晃珍珠木树获得
+	ShakingPalmTree: 摇晃棕榈树获得
+	ShakingAshTree: 摇晃灰烬树获得
+	ShakingGlowingMushroom: 摇晃巨型夜光蘑菇获得
+	// Breaking Objects
+	BreakingPots: 打破罐子获得
+	BreakingShadowOrb: 打破暗影珠获得
+	BreakingCrimsonHeart: 打破猩红心脏获得
+
+	Fishing: {
+		ListSeparator: 、
+		HardmodeSuffix: " (困难模式)"
+
+		Rarities: {
+			Plentiful: 丰富
+			Common: 常见
+			Uncommon: 罕见
+			Rare: 稀有
+			VeryRare: 非常稀有
+			ExtremelyRare: 极其稀有
+			Junk: 垃圾
+			Quest: 任务
+		}
+
+		Environments: {
+			Any: 任何生物群落
+			AnyLowPower: 任何生物群落
+			Underground: 地下
+			Cavern: 洞穴
+			Underworld: 地狱
+			Surface: 地表
+			Forest: 森林
+			Jungle: 丛林
+			Sky: 天空
+			Snow: 雪原
+			Corruption: 腐化之地
+			Crimson: 猩红之地
+			Hallow: 神圣之地
+			Desert: 沙漠
+			Oasis: 绿洲
+			Honey: 蜂蜜
+			Lava: 熔岩
+			Ocean: 海洋
+			Dungeon: 地牢
+			GlowingMushroom: 发光蘑菇生物群落
+			LargeLakes: 大湖
+			OverlappingIceEvilHallow: 重叠的冰雪、邪恶/神圣生物群落
+			BloodMoon: 血月期间
+		}
+	}
+}
+
+Configs: {
+	TooltipConfig: {
+		ShowMode: {
+			Label: 显示模式
+			Tooltip: ""
+			Always.Label: 总是显示
+			Never.Label: 从不显示
+			OnShift.Label: 按住Shift时
+		}
+
+		TooltipColor: {
+			Label: 提示颜色
+			Tooltip: ""
+		}
+
+		# Headers for each setting
+		Crafting: {
+			Label: 制作
+			Tooltip: ""
+		}
+
+		Shops: {
+			Label: 商店
+			Tooltip: ""
+		}
+
+		Drops: {
+			Label: NPC 掉落
+			Tooltip: ""
+		}
+
+		Catching: {
+			Label: 生物捕捉
+			Tooltip: ""
+		}
+
+		Shimmering: {
+			Label: 微光 (嬗变)
+			Tooltip: ""
+		}
+
+		Decrafting: {
+			Label: 微光 (分解)
+			Tooltip: ""
+		}
+
+		GrabBags: {
+			Label: 摸彩袋
+			Tooltip: ""
+		}
+
+		Chests: {
+			Label: 宝箱
+			Tooltip: ""
+		}
+
+		Fishing: {
+			Label: 钓鱼
+			Tooltip: ""
+		}
+
+		Extractinator: {
+			Label: 提炼机
+			Tooltip: ""
+		}
+
+		ChlorophyteExtractinator: {
+			Label: 叶绿提炼机
+			Tooltip: ""
+		}
+
+		TooltipSettings: {
+			Enabled.Label: 启用
+
+			MaxCount: {
+				Label: 最大显示项目/NPC数量
+				Tooltip: 设为0则只显示简短提示 (例如, '可制作')。
+			}
+		}
+
+		DisplayName: 获取信息
+
+		Customized: {
+			Label: 其他来源
+			Tooltip: ""
+		}
+
+		ItemShowMode: {
+			Label: 物品显示模式
+			Tooltip: ""
+		}
+	}
+
+	TooltipShowMode: {
+		Tooltip: ""
+		Never.Label: 从不显示
+		OnShift.Label: 按住Shift时
+		Always.Label: 总是显示
+	}
+
+	TooltipSettings: {
+		Tooltip: ""
+
+		Enabled: {
+			Label: 启用
+			Tooltip: ""
+		}
+
+		MaxCount: {
+			Label: 最大数量
+			Tooltip: ""
+		}
+	}
+
+	ItemShowMode: {
+		// Tooltip: ""
+		Icon.Label: 显示图标
+		Name.Label: 显示名词
+		IconAndName.Label: 显示图标与名称
+	}
+}

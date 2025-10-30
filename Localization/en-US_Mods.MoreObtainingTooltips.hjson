@@ -1,0 +1,208 @@
+Tooltips: {
+	Craftable: Craftable
+	Shimmered: Shimmered
+	Decrafted: Decrafted
+	Grabbed: Grabbed in grab bags
+	FoundInChests: Found in chests
+	FromExtractinator: From Extractinator
+	FromChlorophyteExtractinator: From Chlorophyte Extractinator
+	Purchasable: Purchasable
+	Droppable: Droppable by NPC
+	Catchable: Catchable from NPC
+	FishingCatch: Fishing Catch
+	CraftedWith: Crafted with {0}
+	ShimmeredFrom: Shimmered from {0}
+	DecraftedFrom: Decrafted from {0}
+	GrabbedFrom: Grabbed from {0}
+	FoundIn: Found in {0}
+	ExtractedFrom: Extracted from {0} in [i:997]
+	ChlorophyteExtractedFrom: Extracted from {0} in [i:5296]
+	SoldBy: Sold by {0}
+	DroppedBy: Dropped by {0}
+	CatchedFrom: Catched from {0}
+	# {0} = Rarity, {1} = Environment
+	FishingCatchDetails: "{0} fishing catch in {1}"
+	# Hint text
+	PressShiftHint: <Press Shift for obtaining info>
+	// Quests & NPCs
+	AnglerQuest: Reward of Angler quests
+	DyeTraderQuest: Reward of Dye Trader quests
+	PartyGirlGiven: Given by Party girl
+	// Shaking Trees
+	ShakingForestTree: Drop from shaking Forest trees
+	ShakingMahoganyTree: Drop from shaking Mahogany trees
+	ShakingEbonwoodTree: Drop from shaking Ebonwood trees
+	ShakingShadewoodTree: Drop from shaking Shadewood trees
+	ShakingPearlwoodTree: Drop from shaking Pearlwood trees
+	ShakingPalmTree: Drop from shaking Palm trees
+	ShakingAshTree: Drop from shaking Ash trees
+	ShakingGlowingMushroom: Drop from shaking Giant Glowing Mushrooms
+	// Breaking Objects
+	BreakingPots: Drop from breaking Pots
+	BreakingShadowOrb: Drop from breaking Shadow Orbs
+	BreakingCrimsonHeart: Drop from breaking Crimson Hearts
+
+	Fishing: {
+		ListSeparator: ", "
+		HardmodeSuffix: " (Hardmode)"
+
+		Rarities: {
+			Plentiful: Plentiful
+			Common: Common
+			Uncommon: Uncommon
+			Rare: Rare
+			VeryRare: Very Rare
+			ExtremelyRare: Extremely Rare
+			Junk: Junk
+			Quest: Quest
+		}
+
+		Environments: {
+			Any: any biome
+			AnyLowPower: any biome
+			Underground: Underground
+			Cavern: Cavern
+			Underworld: Underworld
+			Surface: Surface
+			Forest: Forest
+			Jungle: Jungle
+			Sky: Sky
+			Snow: Snow biome
+			Corruption: Corruption
+			Crimson: Crimson
+			Hallow: Hallow
+			Desert: Desert
+			Oasis: Oasis
+			Honey: Honey
+			Lava: Lava
+			Ocean: Ocean
+			Dungeon: the Dungeon
+			GlowingMushroom: Glowing Mushroom biome
+			LargeLakes: large lakes
+			OverlappingIceEvilHallow: overlapping Ice & evil/Hallow biomes
+			BloodMoon: a Blood Moon
+		}
+	}
+}
+
+Configs: {
+	TooltipConfig: {
+		ShowMode: {
+			Label: Show Mode
+			Tooltip: ""
+			Always.Label: Always
+			Never.Label: Never
+			OnShift.Label: On Shift
+		}
+
+		TooltipColor: {
+			Label: Tooltip Color
+			Tooltip: ""
+		}
+
+		# Headers for each setting
+		Crafting: {
+			Label: Crafting
+			Tooltip: ""
+		}
+
+		Shops: {
+			Label: Shops
+			Tooltip: ""
+		}
+
+		Drops: {
+			Label: NPC Drops
+			Tooltip: ""
+		}
+
+		Catching: {
+			Label: Critter Catching
+			Tooltip: ""
+		}
+
+		Shimmering: {
+			Label: Shimmer (Transform)
+			Tooltip: ""
+		}
+
+		Decrafting: {
+			Label: Shimmer (Decraft)
+			Tooltip: ""
+		}
+
+		GrabBags: {
+			Label: Grab Bags
+			Tooltip: ""
+		}
+
+		Chests: {
+			Label: Chests
+			Tooltip: ""
+		}
+
+		Fishing: {
+			Label: Fishing
+			Tooltip: ""
+		}
+
+		Extractinator: {
+			Label: Extractinator
+			Tooltip: ""
+		}
+
+		ChlorophyteExtractinator: {
+			Label: Chlorophyte Extractinator
+			Tooltip: ""
+		}
+
+		TooltipSettings: {
+			Enabled.Label: Enabled
+
+			MaxCount: {
+				Label: Max Items/NPCs to Show
+				Tooltip: Set to 0 to only show if it's obtainable this way (e.g., 'Craftable').
+			}
+		}
+
+		DisplayName: Tooltip Config
+
+		Customized: {
+			Label: Customized
+			Tooltip: ""
+		}
+
+		ItemShowMode: {
+			Label: Item Show Mode
+			Tooltip: ""
+		}
+	}
+
+	TooltipShowMode: {
+		Tooltip: ""
+		Never.Label: Never
+		OnShift.Label: On Shift
+		Always.Label: Always
+	}
+
+	TooltipSettings: {
+		Tooltip: ""
+
+		Enabled: {
+			Label: Enabled
+			Tooltip: ""
+		}
+
+		MaxCount: {
+			Label: Max Count
+			Tooltip: ""
+		}
+	}
+
+	ItemShowMode: {
+		Tooltip: ""
+		Icon.Label: Icon
+		Name.Label: Name
+		IconAndName.Label: Icon And Name
+	}
+}
