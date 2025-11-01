@@ -24,6 +24,7 @@ Tooltips: {
 	FishingCatchDetails: 在 {1} 的 {0} 渔获
 	# Hint text
 	PressShiftHint: <按住 Shift 查看获取方式>
+	AnyNPC: 任意NPC
 	// Quests & NPCs
 	AnglerQuest: 渔夫任务奖励
 	DyeTraderQuest: 染料商任务奖励
@@ -180,6 +181,11 @@ Configs: {
 		ShowShopCondition: {
 			Label: 展示出售条件
 			Tooltip: ""
+		}
+
+		MaxTooltipLength: {
+			Label: 自动分行长度
+			// Tooltip: ""
 		}
 	}
 

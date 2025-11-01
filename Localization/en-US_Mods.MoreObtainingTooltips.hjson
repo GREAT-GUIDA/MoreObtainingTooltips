@@ -24,6 +24,7 @@ Tooltips: {
 	FishingCatchDetails: "{0} fishing catch in {1}"
 	# Hint text
 	PressShiftHint: <Press Shift for obtaining info>
+	AnyNPC: Any NPC
 	// Quests & NPCs
 	AnglerQuest: Reward of Angler quests
 	DyeTraderQuest: Reward of Dye Trader quests
@@ -179,6 +180,11 @@ Configs: {
 
 		ShowShopCondition: {
 			Label: Show Shop Condition
+			Tooltip: ""
+		}
+
+		MaxTooltipLength: {
+			Label: Automatic Line Length
 			Tooltip: ""
 		}
 	}

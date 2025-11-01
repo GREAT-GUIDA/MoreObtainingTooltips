@@ -191,7 +191,7 @@ namespace MoreObtainingTooltips {
                             .Select(condition => condition.Description.Value)
                             .Where(text => !string.IsNullOrEmpty(text))
                             .ToList();
-
+                        
                         var sourceInfo = new ShopSourceInfo(shop.NpcType, conditionTexts);
 
                         if (!ShopSources.TryGetValue(entry.Item.type, out var sourceList)) {
@@ -200,6 +200,10 @@ namespace MoreObtainingTooltips {
                         }
 
                         sourceList.Add(sourceInfo);
+                        if(sourceList.Count >= 21 || sourceList[0].NpcId == -1) {
+                            sourceList.Clear();
+                            sourceList.Add(new ShopSourceInfo(-1, conditionTexts));
+                        }
                     }
                 }
             }

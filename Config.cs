@@ -29,6 +29,13 @@ namespace MoreObtainingTooltips
         [Slider]
         public int MaxCount { get; set; } = 5;
     }
+    public class ShopTooltipSettings : TooltipSettings {
+
+        [DefaultValue(100)]
+        [Range(80, 1000)]
+        [Slider]
+        public int MaxLength { get; set; } = 5;
+    }
 
     public class TooltipConfig : ModConfig {
         public override ConfigScope Mode => ConfigScope.ClientSide;
@@ -44,6 +51,10 @@ namespace MoreObtainingTooltips
 
         [DefaultValue(true)]
         public bool ShowShopCondition { get; set; } = true;
+
+        [DefaultValue(100)]
+        [Range(80, 500)]
+        public int MaxTooltipLength { get; set; } = 100;
 
         public TooltipSettings Crafting { get; set; } = new();
         public TooltipSettings Shops { get; set; } = new();

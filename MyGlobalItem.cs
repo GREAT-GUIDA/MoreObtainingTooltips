@@ -68,7 +68,7 @@ namespace MoreObtainingTooltips {
             for (int i = 0; i < countToShow; i++) {
                 var source = distinctSources[i];
                 string npcName = Lang.GetNPCNameValue(source.NpcId);
-
+                if (source.NpcId == -1) npcName = GetText("AnyNPC");
                 if (source.Conditions.Any() && Config.ShowShopCondition) {
                     string conditionText = string.Join(", ", source.Conditions);
                     tooltipParts.Add($"{npcName}({conditionText})");
@@ -95,11 +95,47 @@ namespace MoreObtainingTooltips {
             }
 
             var obtainingMethods = new List<string>();
+            //Main.NewText(NPCShopDatabase.AllShops.ToArray()[24].FullName);
 
-            // Helper to add a valid tooltip line to the list
             void TryAddMethod(string line) {
-                if (!string.IsNullOrEmpty(line)) {
+                if (string.IsNullOrEmpty(line)) {
+                    return;
+                }
+
+                if (line.Length <= Config.MaxTooltipLength) {
                     obtainingMethods.Add(line);
+                    return;
+                }
+
+                int currentPosition = 0;
+                while (currentPosition < line.Length) {
+                    int segmentEnd = System.Math.Min(currentPosition + Config.MaxTooltipLength, line.Length);
+                    string segment = line.Substring(currentPosition, segmentEnd - currentPosition);
+
+                    if (segmentEnd == line.Length) {
+                        obtainingMethods.Add(segment.TrimStart());
+                        break;
+                    }
+
+                    int breakIndexInSegment = -1;
+
+                    int searchStart = (segment.Length > Config.MaxTooltipLength / 2) ? Config.MaxTooltipLength / 2 : 0;
+
+                    int commaIndex = segment.LastIndexOf(", ", segment.Length - 1, segment.Length - searchStart);
+                    int spaceIndex = segment.LastIndexOf(' ', segment.Length - 1, segment.Length - searchStart);
+
+                    breakIndexInSegment = System.Math.Max(commaIndex, spaceIndex);
+
+                    if (breakIndexInSegment > 0) {
+                        string lineSegment = segment.Substring(0, breakIndexInSegment);
+                        obtainingMethods.Add(lineSegment.TrimStart());
+
+                        int skipLength = (segment[breakIndexInSegment] == ',') ? 2 : 1;
+                        currentPosition += breakIndexInSegment + skipLength;
+                    } else {
+                        obtainingMethods.Add(segment.TrimStart());
+                        currentPosition += segment.Length;
+                    }
                 }
             }
 

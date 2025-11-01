@@ -7,6 +7,9 @@
   <PropertyGroup>
     <DebugMod>string.Empty</DebugMod>
   </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Localization\ru-RU_Mods.MoreObtainingTooltips.hjson" />
+  </ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="Solaestas.tModLoader.ModBuilder" Version="1.6.1" />
 	</ItemGroup>
