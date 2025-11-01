@@ -24,7 +24,9 @@ Tooltips: {
 	FishingCatchDetails: "{0} fishing catch in {1}"
 	# Hint text
 	PressShiftHint: <Press Shift for obtaining info>
+	More: ... ({0} more)
 	AnyNPC: Any NPC
+	UnknownChest: Unknown Chest
 	// Quests & NPCs
 	AnglerQuest: Reward of Angler quests
 	DyeTraderQuest: Reward of Dye Trader quests
@@ -50,7 +52,6 @@ Tooltips: {
 	YeletsDrop: Dropped by any enemy in the Jungle after any mechanical boss has been defeated
 
 	Fishing: {
-		ListSeparator: ", "
 		HardmodeSuffix: " (Hardmode)"
 
 		Rarities: {

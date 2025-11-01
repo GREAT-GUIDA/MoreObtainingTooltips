@@ -12,7 +12,6 @@ using System;
 
 namespace MoreObtainingTooltips {
     public class MyGlobalItem : GlobalItem {
-        // Cached instance of the config.
         private static TooltipConfig _config;
         private static TooltipConfig Config => _config ??= ModContent.GetInstance<TooltipConfig>();
 
@@ -38,7 +37,7 @@ namespace MoreObtainingTooltips {
             var tooltipText = new StringBuilder(string.Format(format, itemIcons));
 
             if (distinctSources.Count > countToShow) {
-                tooltipText.Append($"… ({(distinctSources.Count - countToShow)} more)");
+                tooltipText.Append(Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.More", distinctSources.Count - countToShow));
             }
 
             return tooltipText.ToString();
@@ -52,7 +51,7 @@ namespace MoreObtainingTooltips {
             var tooltipText = new StringBuilder(string.Format(format, nameList));
 
             if (uniqueNames.Count > maxCount) {
-                tooltipText.Append($"… ({(uniqueNames.Count - maxCount)} more)");
+                tooltipText.Append(Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.More", uniqueNames.Count - maxCount));
             }
 
             return tooltipText.ToString();
@@ -71,7 +70,7 @@ namespace MoreObtainingTooltips {
                 if (source.NpcId == -1) npcName = GetText("AnyNPC");
                 if (source.Conditions.Any() && Config.ShowShopCondition) {
                     string conditionText = string.Join(", ", source.Conditions);
-                    tooltipParts.Add($"{npcName}({conditionText})");
+                    tooltipParts.Add($"{npcName} ({conditionText})");
                 } else {
                     tooltipParts.Add(npcName);
                 }
@@ -81,7 +80,7 @@ namespace MoreObtainingTooltips {
             var tooltipText = new StringBuilder(string.Format(format, nameList));
 
             if (distinctSources.Count > countToShow) {
-                tooltipText.Append($"… ({(distinctSources.Count - countToShow)} more)");
+                tooltipText.Append(Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.More", distinctSources.Count - countToShow));
             }
 
             return tooltipText.ToString();
@@ -186,12 +185,10 @@ namespace MoreObtainingTooltips {
                 } else {
                     string rarityText = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Rarities.{fishingInfo.RarityKey}");
 
-                    string separator = GetText("Fishing.ListSeparator");
-
                     List<string> localizedEnvs = fishingInfo.EnvironmentKeys
                         .Select(key => Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Environments.{key}"))
                         .ToList();
-                    string environmentText = string.Join(separator, localizedEnvs);
+                    string environmentText = string.Join(", ", localizedEnvs);
 
                     if (fishingInfo.IsHardmode) {
                         environmentText += GetText("Fishing.HardmodeSuffix");
@@ -256,7 +253,7 @@ namespace MoreObtainingTooltips {
                     tooltips.Insert(insertIndex + i, line);
                 }
             } else {
-                var hintLine = new TooltipLine(Mod, "ObtainingHint", "<Press Shift for obtaining info>") {
+                var hintLine = new TooltipLine(Mod, "ObtainingHint", Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.PressShiftHint")) {
                     OverrideColor = Config.TooltipColor
                 };
                 tooltips.Insert(insertIndex, hintLine);

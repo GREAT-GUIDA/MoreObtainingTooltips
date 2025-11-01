@@ -13,6 +13,10 @@ using Terraria.ModLoader.IO;
 using tModPorter;
 using Terraria.Localization;
 using static Terraria.GameContent.Bestiary.IL_BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions;
+using System;
+using System.Net.Sockets;
+using static System.Net.Mime.MediaTypeNames;
+using static Terraria.ModLoader.BackupIO;
 
 namespace MoreObtainingTooltips {
     public class ObtainingSystem : ModSystem {
@@ -34,6 +38,18 @@ namespace MoreObtainingTooltips {
             public ShopSourceInfo(int npcId, List<string> conditions) {
                 NpcId = npcId;
                 Conditions = conditions;
+            }
+        }
+
+        public struct ChestSourceInfo {
+            public readonly int ItemId;
+            public readonly bool Locked;
+            public readonly List<string> Name;
+
+            public ChestSourceInfo(int itemID, bool locked, List<string> name) {
+                ItemId = itemID;
+                Locked = locked;
+                Name = name;
             }
         }
         public static Dictionary<int, List<int>> ShimmerSources { get; private set; }
@@ -213,18 +229,50 @@ namespace MoreObtainingTooltips {
                 for (int i = 0; i < Main.maxChests; i++) {
                     Chest chest = Main.chest[i];
                     if (chest == null) continue;
-
                     Tile tile = Main.tile[chest.x, chest.y];
                     if (tile == null || !TileID.Sets.IsAContainer[tile.type]) continue;
 
                     int style = TileObjectData.GetTileStyle(tile);
                     int chestItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, style);
+                    bool locked = false;
+                    string name = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.UnknownChest");
 
-                    if (chestItemID > ItemID.None) {
-                        foreach (Item item in chest.item) {
-                            if (item != null && !item.IsAir) {
-                                AddSource(ChestSources, item.type, chestItemID);
+                    if (chestItemID <= ItemID.None) {
+                        if (tile.type == 21) {
+                            if(style >= 23 && style <= 27) chestItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, style - 5);
+                            else chestItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, style - 1);
+                        }
+                        if(tile.type >= TileID.Count){
+                            for (var j = style - 1; j >= 0; j -= 1) {
+                                chestItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, j);
+                                if (chestItemID > ItemID.None) {
+                                    break;
+                                }
                             }
+                        }
+                        if (chestItemID > ItemID.None) {
+                            locked = true;
+                        }
+                    }
+                    if (tile.type == 21)
+                        name = Lang.chestType[tile.frameX / 36].Value;
+                    else if (tile.type == 467 && tile.frameX / 36 == 4)
+                        name = Lang.GetItemNameValue(3988);
+                    else if (tile.type == 467)
+                        name = Lang.chestType2[tile.frameX / 36].Value;
+                    else if (tile.type == 88)
+                        name = Lang.dresserType[tile.frameX / 54].Value;
+                    else if (TileID.Sets.BasicChest[tile.type] || TileID.Sets.BasicDresser[tile.type])
+                        name = TileLoader.DefaultContainerName(tile.type, tile.TileFrameX, tile.TileFrameY);
+
+                    if(name == string.Empty) name = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.UnknownChest");
+
+                    if (chestItemID <= ItemID.None) {
+                        chestItemID = -1;
+                    }
+                    foreach (Item item in chest.item) {
+                        if (item != null && !item.IsAir) {
+                            AddSource(ChestSources, item.type, chestItemID);
                         }
                     }
                 }

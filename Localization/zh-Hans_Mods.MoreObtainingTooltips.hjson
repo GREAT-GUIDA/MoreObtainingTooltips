@@ -24,7 +24,9 @@ Tooltips: {
 	FishingCatchDetails: 在 {1} 的 {0} 渔获
 	# Hint text
 	PressShiftHint: <按住 Shift 查看获取方式>
+	More: ... (还有{0}个)
 	AnyNPC: 任意NPC
+	UnknownChest: 未知箱子
 	// Quests & NPCs
 	AnglerQuest: 渔夫任务奖励
 	DyeTraderQuest: 染料商任务奖励
@@ -50,7 +52,6 @@ Tooltips: {
 	YeletsDrop: 击败任一机械 Boss 后，在丛林由任何敌人掉落
 
 	Fishing: {
-		ListSeparator: 、
 		HardmodeSuffix: " (困难模式)"
 
 		Rarities: {
