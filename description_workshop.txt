@@ -28,7 +28,8 @@ Unless specified as Vanilla Only, all information supports mods.
 
 Discord: https://discord.gg/eVR94prTmq
 
-Open source
+Open source, support ModCall to add source:
+https://github.com/GREAT-GUIDA/MoreObtainingTooltips
 
 More Obtaining Tooltips 物品获取提示
 
@@ -60,7 +61,8 @@ More Obtaining Tooltips 物品获取提示
 
 Discord: https://discord.gg/eVR94prTmq
 
-开源
+开源，支持ModCall添加自定义来源：
+https://github.com/GREAT-GUIDA/MoreObtainingTooltips
 
 
 Показывает способы получения предмета в его описании.

@@ -626,6 +626,55 @@ namespace MoreObtainingTooltips {
                 ItemID.TheUndertaker, ItemID.MusketBall, ItemID.CrimsonHeart, ItemID.PanicNecklace,
                 ItemID.CrimsonRod, ItemID.TheRottedFork
             );
+
+            // --- Slime Drops ---
+            AddCustomizedSourceToItems("SlimeDrops",
+                // Potions
+                ItemID.SwiftnessPotion, ItemID.IronskinPotion, ItemID.SpelunkerPotion,
+                ItemID.MiningPotion, ItemID.RecallPotion, ItemID.WormholePotion,
+
+                // Ores
+                ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre,
+                ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre,
+
+                // Miscellaneous
+                ItemID.Torch, ItemID.Bomb, ItemID.Rope
+            );
+
+
+
+
+
+            string templateBiomeHardmode = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.DroppedInBiomeHardmode");
+            string templateBiome = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.DroppedInBiome");
+
+            // 使用 DroppedInBiomeHardmode 模板
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.UndergroundHallow")), ItemID.SoulofLight);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.UndergroundCorruption") + "/" + Language.GetTextValue("Bestiary_Biomes.UndergroundCrimson")), ItemID.SoulofNight);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Ocean")),ItemID.PirateMap);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheUnderworld")), ItemID.LivingFireBlock, ItemID.HelFire);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheSnow")),ItemID.Amarok);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheDungeon")),ItemID.Kraken);
+
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Jungle")), ItemID.JungleKey);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheCorruption")), ItemID.CorruptionKey);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Crimson")), ItemID.CrimsonKey);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheHallow")), ItemID.HallowedKey);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Snow")), ItemID.FrozenKey);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Desert")), ItemID.DungeonDesertKey);
+
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Events.Halloween")), ItemID.Present);
+            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Events.Christmas")), ItemID.GoodieBag, ItemID.BloodyMachete, ItemID.BladedGlove);
+
+            // --- Pre-Hardmode Underworld Yoyo Drop (Post-Skeletron) ---
+            AddCustomizedSourceToItems("CascadeDrop",
+                ItemID.Cascade
+            );
+
+            // --- Hardmode Jungle Yoyo Drop (Post-Mech Boss) ---
+            AddCustomizedSourceToItems("YeletsDrop",
+                ItemID.Yelets
+            );
         }
 
 

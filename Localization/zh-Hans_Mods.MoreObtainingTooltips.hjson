@@ -42,6 +42,12 @@ Tooltips: {
 	BreakingPots: 打破罐子获得
 	BreakingShadowOrb: 打破暗影珠获得
 	BreakingCrimsonHeart: 打破猩红心脏获得
+	SlimeDrops: 由部分史莱姆携带
+	DroppedInBiomeHardmode: 在困难模式中由{0}的任何敌人掉落
+	DroppedInBiome: 由{0}的任何敌人掉落
+	DroppedDuringEvent: 在{0}期间由任何敌人掉落
+	CascadeDrop: 击败骷髅王后，在地狱由任何敌人掉落
+	YeletsDrop: 击败任一机械 Boss 后，在丛林由任何敌人掉落
 
 	Fishing: {
 		ListSeparator: 、

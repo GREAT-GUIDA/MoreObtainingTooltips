@@ -42,6 +42,12 @@ Tooltips: {
 	BreakingPots: Drop from breaking Pots
 	BreakingShadowOrb: Drop from breaking Shadow Orbs
 	BreakingCrimsonHeart: Drop from breaking Crimson Hearts
+	SlimeDrops: Carried by certain slimes
+	DroppedInBiomeHardmode: Dropped by any enemy in {0} during Hardmode
+	DroppedInBiome: Dropped by any enemy in {0}
+	DroppedDuringEvent: Dropped by any enemy during {0}
+	CascadeDrop: Dropped by any enemy in the Underworld after Skeletron has been defeated
+	YeletsDrop: Dropped by any enemy in the Jungle after any mechanical boss has been defeated
 
 	Fishing: {
 		ListSeparator: ", "
