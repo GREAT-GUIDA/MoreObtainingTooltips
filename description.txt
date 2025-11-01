@@ -3,9 +3,9 @@
 Shows how to obtain an item in its tooltip.
 
 [b]Currently Supports:[/b]
-
+[list]
 [*][b]Crafting:[/b] Displays the materials required to craft the item.
-[*][b]Sold by NPCs:[/b] Displays the NPCs that sell the item.
+[*][b]Sold by NPCs:[/b] Displays the NPCs that sell the item and the sell condition.
 [*][b]Dropped by NPCs:[/b] Displays the NPCs that drop the item.
 [*][b]Critter Catching:[/b] Displays the critters that can be caught to obtain the item.
 [*][b]Shimmer Transmutation:[/b] Displays the item that can be transmuted into this one.
@@ -15,20 +15,23 @@ Shows how to obtain an item in its tooltip.
 [*][b]Fishing:[/b] Displays the required biome and rarity to fish up the item (Currently Vanilla Only).
 [*][b]Extractinator:[/b] Displays the blocks that can be extracted to obtain the item.
 [*][b]Chlorophyte Extractinator:[/b] Displays the blocks that can be extracted to obtain the item.
-[*][b]Special Obtaining:[/b] Angler quests, Dye Trader trades, Party Girl gifts (Currently Vanilla Only).
+[*][b]Special Obtaining:[/b] Angler quests, Dye Trader trades, Party Girl gifts, and more (Currently Vanilla Only).
+[/list]
 
 The display of all information is configurable.
 Unless specified as Vanilla Only, all information supports mods.
 
 [b]Future Plans:[/b]
-
+[list]
 [*][b]Special Mod Support[/b]
 [*][b]Tile Breaking Drops[/b]
 [*]And other various obtaining methods
+[/list]
 
 Discord: https://discord.gg/eVR94prTmq
 
-Open source
+Open source, support ModCall to add source:
+https://github.com/GREAT-GUIDA/MoreObtainingTooltips
 
 
 More Obtaining Tooltips 物品获取提示
@@ -38,7 +41,7 @@ More Obtaining Tooltips 物品获取提示
 [b]目前支持：[/b]
 
 [*][b]制作：[/b]显示制作该物品所需的材料
-[*][b]NPC 出售：[/b]显示出售该物品的 NPC
+[*][b]NPC 出售：[/b]显示出售该物品的 NPC，以及出售条件
 [*][b]NPC 掉落：[/b]显示掉落该物品的 NPC
 [*][b]生物捕捉：[/b]显示可以从中捕捉到该物品的生物
 [*][b]微光嬗变：[/b]显示可以嬗变为该物品的另一物品
@@ -48,9 +51,9 @@ More Obtaining Tooltips 物品获取提示
 [*][b]渔获：[/b]显示钓到该物品所需的生物群落和稀有度（目前仅支持原版）
 [*][b]提炼机：[/b]显示可以从提炼机中提炼出该物品的物块
 [*][b]叶绿提炼机 ：[/b]显示可以从叶绿提炼机中提炼出该物品的物块
-[*][b]特殊获取：[/b]渔夫任务，染料商兑换，派对女孩给予（目前仅支持原版）
+[*][b]特殊获取：[/b]渔夫任务，染料商兑换，派对女孩给予，以及别的什么（目前仅支持原版）
 
-所有信息的显示均可配置
+所有信息的显示均可配置，可以收起信息
 除非写明仅支持原版，所有信息均支持mod
 
 [b]未来可能添加：[/b]
@@ -61,7 +64,8 @@ More Obtaining Tooltips 物品获取提示
 
 Discord: https://discord.gg/eVR94prTmq
 
-开源
+开源，支持ModCall添加自定义来源：
+https://github.com/GREAT-GUIDA/MoreObtainingTooltips
 
 
 Показывает способы получения предмета в его описании.
