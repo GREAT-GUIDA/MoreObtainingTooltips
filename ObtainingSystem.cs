@@ -17,13 +17,22 @@ using System;
 using System.Net.Sockets;
 using static System.Net.Mime.MediaTypeNames;
 using static Terraria.ModLoader.BackupIO;
+using static Terraria.ModLoader.NPCShopDatabase;
+using ReLogic.Utilities;
+using System.Diagnostics.CodeAnalysis;
+using Mono.Cecil;
+using System.IO;
+using System.Reflection;
+using Player = Terraria.Player;
+using Terraria.ModLoader.Default;
+using static MoreObtainingTooltips.ObtainingSystem;
 
 namespace MoreObtainingTooltips {
     public class ObtainingSystem : ModSystem {
         public struct FishingInfo {
-            public readonly string RarityKey;
-            public readonly List<string> EnvironmentKeys;
-            public readonly bool IsHardmode;
+            public string RarityKey;
+            public List<string> EnvironmentKeys;
+            public bool IsHardmode;
 
             public FishingInfo(string rarityKey, bool isHardmode, params string[] environmentKeys) {
                 RarityKey = rarityKey;
@@ -32,8 +41,8 @@ namespace MoreObtainingTooltips {
             }
         }
         public struct ShopSourceInfo {
-            public readonly int NpcId;
-            public readonly List<string> Conditions;
+            public int NpcId;
+            public List<string> Conditions;
 
             public ShopSourceInfo(int npcId, List<string> conditions) {
                 NpcId = npcId;
@@ -42,9 +51,9 @@ namespace MoreObtainingTooltips {
         }
 
         public struct ChestSourceInfo {
-            public readonly int ItemId;
-            public readonly bool Locked;
-            public readonly List<string> Name;
+            public int ItemId;
+            public bool Locked;
+            public List<string> Name;
 
             public ChestSourceInfo(int itemID, bool locked, List<string> name) {
                 ItemId = itemID;
@@ -52,73 +61,130 @@ namespace MoreObtainingTooltips {
                 Name = name;
             }
         }
-        public static Dictionary<int, List<int>> ShimmerSources { get; private set; }
-        public static Dictionary<int, List<int>> DecraftSources { get; private set; }
-        public static Dictionary<int, List<int>> DropSources { get; private set; }
-        public static Dictionary<int, List<int>> GrabBagSources { get; private set; }
-        public static Dictionary<int, List<int>> CraftingSources { get; private set; }
-        public static Dictionary<int, List<ShopSourceInfo>> ShopSources { get; private set; }
-        public static Dictionary<int, List<int>> ChestSources { get; private set; }
-        public static Dictionary<int, List<int>> CatchNPCSources { get; private set; }
-        public static Dictionary<int, FishingInfo> FishingSources { get; private set; }
-        public static Dictionary<int, List<int>> ExtractinatorSources { get; private set; }
-        public static Dictionary<int, List<int>> ChlorophyteExtractinatorSources { get; private set; }
-        public static Dictionary<int, List<string>> CustomizedSources { get; private set; }
+
+        public struct SourceInfo {
+            public int id;
+            public int num;
+            public string str;
+            public SourceInfo(int id, int num = 0, string str = "") {
+                this.id = id;
+                this.num = num;
+                this.str = str;
+            }
+
+            public static implicit operator SourceInfo(int id) => new SourceInfo(id);
+            public static implicit operator SourceInfo(string str) => new SourceInfo(0, 0, str);
+            public bool Equals(SourceInfo other) {
+                return id == other.id && num == other.num && str == other.str;
+            }
+
+            public override bool Equals(object obj) {
+                return obj is SourceInfo other && Equals(other);
+            }
+
+            public override int GetHashCode() {
+                return id.GetHashCode();
+            }
+
+            public static bool operator ==(SourceInfo left, SourceInfo right) {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(SourceInfo left, SourceInfo right) {
+                return !left.Equals(right);
+            }
+        }
+        public static Dictionary<int, List<SourceInfo>> BreakTileSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> ShimmerSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> DecraftSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> DropSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> GrabBagSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> CraftingSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> ShopSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> ChestSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> CatchNPCSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> NPCBannerSources { get; private set; } = new();
+        public static Dictionary<int, FishingInfo> FishingSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> ExtractinatorSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> ChlorophyteExtractinatorSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> CustomizedSources { get; private set; } = new();
 
         public static Dictionary<string, List<int>> RegisteredCustomSources = new();
         
-        private static bool _loadedChestSourcesFromTag;
+        private static bool _loadedChestSourcesFromTag = false;
+        public static Dictionary<int, string> MusicIdToMusicName { get; private set; } = new();
 
+        private static bool _loadedBreakTileSourcesFromTag = false;
         public override void OnModLoad() {
-            ShimmerSources = new Dictionary<int, List<int>>();
-            DecraftSources = new Dictionary<int, List<int>>();
-            DropSources = new Dictionary<int, List<int>>();
-            GrabBagSources = new Dictionary<int, List<int>>();
-            CraftingSources = new Dictionary<int, List<int>>();
-            ShopSources = new Dictionary<int, List<ShopSourceInfo>>();
-            ChestSources = new Dictionary<int, List<int>>();
-            CatchNPCSources = new Dictionary<int, List<int>>();
-            FishingSources = new Dictionary<int, FishingInfo>();
-            ExtractinatorSources = new Dictionary<int, List<int>>();
-            ChlorophyteExtractinatorSources = new Dictionary<int, List<int>>();
-
-            _loadedChestSourcesFromTag = false;
         }
+        public override void PostSetupContent() {
+            MusicIdToMusicName.Clear();
 
+            foreach (FieldInfo field in typeof(MusicID).GetFields(BindingFlags.Public | BindingFlags.Static)) {
+                if (field.FieldType == typeof(short)) {
+                    int musicId = (short)field.GetValue(null);
+                    string musicName = field.Name;
+                    MusicIdToMusicName[musicId] = musicName;
+                }
+            }
+        }
         // 保存世界数据
         public override void SaveWorldData(TagCompound tag) {
-            // 如果 ChestSources 为空或未初始化，则不保存
-            if (ChestSources == null || ChestSources.Count == 0) return;
-
-            var list = new List<TagCompound>();
-            foreach (var pair in ChestSources) {
-                list.Add(new TagCompound {
-                    ["key"] = pair.Key,
-                    ["sources"] = pair.Value
-                });
+            if (ChestSources != null && ChestSources.Count > 0) {
+                var list = new List<TagCompound>();
+                foreach (var pair in ChestSources) {
+                    list.Add(new TagCompound {
+                        ["key"] = pair.Key,
+                        ["sources"] = pair.Value.Select(source => source.id).ToList()
+                    });
+                }
+                tag["ChestSources"] = list;
             }
-            tag["ChestSources"] = list;
+
+            // 修正: < 0 改为 > 0
+            if (BreakTileSources != null && BreakTileSources.Count > 0) {
+                var breakTileList = new List<TagCompound>();
+                foreach (var pair in BreakTileSources) {
+                    breakTileList.Add(new TagCompound {
+                        ["key"] = pair.Key,
+                        // 同样在这里提取 id
+                        ["sources"] = pair.Value.Select(source => source.id).ToList()
+                    });
+                }
+                tag["BreakTileSources"] = breakTileList;
+            }
         }
 
         // 加载世界数据
         public override void LoadWorldData(TagCompound tag) {
-            // 在加载前总是清空
             ChestSources.Clear();
             _loadedChestSourcesFromTag = false;
-
             if (tag.TryGet("ChestSources", out List<TagCompound> list)) {
                 foreach (var entryTag in list) {
-                    if (entryTag.TryGet("key", out int key) && entryTag.TryGet("sources", out List<int> sources)) {
-                        ChestSources[key] = sources;
+                    if (entryTag.TryGet("key", out int key) && entryTag.TryGet("sources", out List<int> sourceIds)) {
+                        ChestSources[key] = sourceIds.Select(id => new SourceInfo(id)).ToList();
                     }
                 }
                 _loadedChestSourcesFromTag = true;
+            }
+
+            BreakTileSources.Clear();
+            _loadedBreakTileSourcesFromTag = false;
+            if (tag.TryGet("BreakTileSources", out List<TagCompound> breakTileList)) {
+                foreach (var entryTag in breakTileList) {
+                    if (entryTag.TryGet("key", out int key) && entryTag.TryGet("sources", out List<int> sourceIds)) {
+                        BreakTileSources[key] = sourceIds.Select(id => new SourceInfo(id)).ToList();
+                    }
+                }
+                _loadedBreakTileSourcesFromTag = true;
             }
         }
 
         public override void OnWorldUnload() {
             ChestSources.Clear();
             _loadedChestSourcesFromTag = false;
+            BreakTileSources.Clear();
+            _loadedBreakTileSourcesFromTag = false;
         }
 
         public override void PostWorldLoad() {
@@ -130,10 +196,45 @@ namespace MoreObtainingTooltips {
             CraftingSources.Clear();
             ShopSources.Clear();
             CatchNPCSources.Clear();
+            NPCBannerSources.Clear();
             FishingSources.Clear();
             ExtractinatorSources.Clear();
             ChlorophyteExtractinatorSources.Clear();
 
+            // --- Populate Breakable Tile Sources ---
+            if (!_loadedBreakTileSourcesFromTag) {
+                for (int x = 0; x < Main.maxTilesX; x++) {
+                    for (int y = 0; y < Main.maxTilesY; y++) {
+                        Tile tile = Main.tile[x, y];
+                        if (tile == null || !tile.HasTile) {
+                            continue;
+                        }
+                        ModTile modTile = TileLoader.GetTile(tile.TileType);
+                        if (modTile != null) {
+                            IEnumerable<Item> itemDrops = modTile.GetItemDrops(x, y);
+                            if (itemDrops != null) {
+                                foreach (Item item in itemDrops) {
+                                    AddSource(BreakTileSources, item.type, tile.type);
+                                }
+                                continue;
+                            }
+                        }
+
+                        WorldGen.KillTile_GetItemDrops(x, y, tile, out var dropItem, out var dropItemStack, out var secondaryItem, out var secondaryItemStack, true);
+                        if (dropItem > ItemID.None) {
+                            AddSource(BreakTileSources, dropItem, tile.type);
+                        }
+                        if (secondaryItem > ItemID.None) {
+                            AddSource(BreakTileSources, secondaryItem, tile.type);
+                        }
+
+                        var dropItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, TileObjectData.GetTileStyle(tile));
+                        if (dropItemID > ItemID.None) {
+                            AddSource(BreakTileSources, dropItemID, tile.type);
+                        }
+                    }
+                }
+            }
 
             // --- Populate Shimmer and Decraft Sources ---
             for (int i = 1; i < ItemLoader.ItemCount; i++) {
@@ -197,6 +298,16 @@ namespace MoreObtainingTooltips {
                 }
             }
 
+            // --- Populate NPC Banner Sources ---
+            for (int i = -10; i < NPCLoader.NPCCount; i++) {
+                NPC npc = new NPC();
+                npc.SetDefaults(i);
+                NPCLoader.SetDefaults(npc);
+                var it = Item.BannerToItem(Item.NPCtoBanner(npc.BannerID()));
+                if (it > ItemID.None) {
+                    AddSource(NPCBannerSources, it, new SourceInfo(npc.BannerID(), ItemID.Sets.KillsToBanner[it]));
+                }
+            }
 
             // --- Populate Shop Sources ---
             foreach (var shop in NPCShopDatabase.AllShops) {
@@ -206,22 +317,27 @@ namespace MoreObtainingTooltips {
                         var conditionTexts = entry.Conditions
                             .Select(condition => condition.Description.Value)
                             .Where(text => !string.IsNullOrEmpty(text))
+                            .Select(text => text.StartsWith("需要") ? text.Substring(2) : text)
                             .ToList();
                         
-                        var sourceInfo = new ShopSourceInfo(shop.NpcType, conditionTexts);
+                        var sourceInfo = new SourceInfo(shop.NpcType, 0, string.Join(", ", conditionTexts));
+                        AddSource(ShopSources, entry.Item.type, sourceInfo);
 
-                        if (!ShopSources.TryGetValue(entry.Item.type, out var sourceList)) {
-                            sourceList = new List<ShopSourceInfo>();
-                            ShopSources[entry.Item.type] = sourceList;
-                        }
-
-                        sourceList.Add(sourceInfo);
-                        if(sourceList.Count >= 21 || sourceList[0].NpcId == -1) {
+                        ShopSources.TryGetValue(entry.Item.type, out var sourceList);
+                        if (sourceList.Count >= 21 || sourceList[0].id == -1) {
                             sourceList.Clear();
-                            sourceList.Add(new ShopSourceInfo(-1, conditionTexts));
+                            sourceList.Add(new SourceInfo(-1, 0, string.Join(", ", conditionTexts)));
                         }
                     }
                 }
+            }
+            int[] travelerItemIds = {
+                2260, 2261, 2262, 4555, 4556, 4557, 4321, 4322,
+                4323, 4324, 4365, 5390, 5386, 5387, 4666, 4664, 4665,
+                3637, 3642, 3621, 3622, 3634, 3639, 3633, 3638, 3635, 3640, 3636, 3641
+            };
+            foreach (int itemId in travelerItemIds) {
+                AddSource(ShopSources, itemId, new SourceInfo(NPCID.TravellingMerchant));
             }
 
             // --- Populate Chest Sources ---
@@ -305,7 +421,39 @@ namespace MoreObtainingTooltips {
                     }
                 }
             }
-
+            int[][] goodieBagDeveloperSets = {
+                new[] { 666, 667, 668, 665, 3287 }, new[] { 1554, 1555, 1556, 1586 },
+                new[] { 1554, 1587, 1588, 1586 }, new[] { 1557, 1558, 1559, 1585 },
+                new[] { 1560, 1561, 1562, 1584 }, new[] { 1563, 1564, 1565, 3582 },
+                new[] { 1566, 1567, 1568 }, new[] { 1580, 1581, 1582, 1583 },
+                new[] { 3226, 3227, 3228, 3288 }, new[] { 3583, 3581, 3578, 3579, 3580 },
+                new[] { 3585, 3586, 3587, 3588, 3024 }, new[] { 3589, 3590, 3591, 3592, 3599 },
+                new[] { 3368, 3921, 3922, 3923, 3924 }, new[] { 3925, 3926, 3927, 3928, 3929 },
+                new[] { 4732, 4733, 4734, 4730 }, new[] { 4747, 4748, 4749, 4746 },
+                new[] { 4751, 4752, 4753, 4750 }, new[] { 4755, 4756, 4757, 4754 } 
+            }
+            ;
+            for (int bagId = ItemID.None + 1; bagId < ItemLoader.ItemCount; bagId++) {
+                if (ItemID.Sets.BossBag[bagId] && !ItemID.Sets.PreHardmodeLikeBossBag[bagId]) {
+                    for (int i = 0; i < ModLoaderMod.DeveloperSets.Length; i++) {
+                        for (int j = 0; j < ModLoaderMod.DeveloperSets[i].Length; j++) {
+                            int devItemId = ModLoaderMod.DeveloperSets[i][j].Type;
+                            AddSource(GrabBagSources, devItemId, bagId);
+                        }
+                    }
+                    for (int i = 0; i < ModLoaderMod.PatronSets.Length; i++) {
+                        for (int j = 0; j < ModLoaderMod.PatronSets[i].Length; j++) {
+                            int patronItemId = ModLoaderMod.PatronSets[i][j].Type;
+                            AddSource(GrabBagSources, patronItemId, bagId);
+                        }
+                    }
+                    foreach (int[] set in goodieBagDeveloperSets) {
+                        foreach (int devItemId in set) {
+                            AddSource(GrabBagSources, devItemId, bagId);
+                        }
+                    }
+                }
+            }
 
             // --- Populate Crafting Sources ---
             var tempCraftingSources = new Dictionary<int, HashSet<int>>();
@@ -320,12 +468,9 @@ namespace MoreObtainingTooltips {
 
                 foreach (Item ingredient in recipe.requiredItem) {
                     if (!ingredient.IsAir) {
-                        tempCraftingSources[resultType].Add(ingredient.type);
+                        AddSource(CraftingSources, resultType, ingredient.type);
                     }
                 }
-            }
-            foreach (var pair in tempCraftingSources) {
-                CraftingSources[pair.Key] = pair.Value.ToList();
             }
 
             var optionsList = ItemTrader.ChlorophyteExtractinator._options;
@@ -341,13 +486,37 @@ namespace MoreObtainingTooltips {
 
             InitializeCustomizedSources();
 
+            var musicIdToPath = MusicLoader.musicByPath.ToDictionary(pair => pair.Value, pair => pair.Key);
+
+            foreach (var pair in MusicLoader.musicToItem) {
+                int musicId = pair.Key;
+                int musicBoxItemId = pair.Value;
+
+                if (musicIdToPath.TryGetValue(musicId, out string musicPath)) {
+                    string format = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.MusicBoxFormat");
+                    string tooltip = string.Format(format, Path.GetFileName(musicPath));
+                    AddCustomizedSourceToItemsString(tooltip, musicBoxItemId);
+                }
+            }
+            for (int type = 1; type < ItemLoader.ItemCount; type++) {
+                Item item = ContentSamples.ItemsByType[type];
+                if (item.createTile == 139 && item.placeStyle > 0) {
+                    MusicIdToMusicName.TryGetValue(item.placeStyle, out string musicName);
+                    string format = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.MusicBoxFormat");
+                    string tooltip = string.Format(format, musicName);
+                    AddCustomizedSourceToItemsString(tooltip, type);
+                }
+            }
+
+
             foreach (var registration in RegisteredCustomSources) {
                 string fullKey = registration.Key;
                 List<int> itemIDs = registration.Value;
 
-                foreach (int itemID in itemIDs) {
-                    if (!CustomizedSources.TryGetValue(itemID, out List<string> sources)) {
-                        sources = new List<string>();
+                foreach (SourceInfo source in itemIDs) {
+                    var itemID = source.id;
+                    if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
+                        sources = new List<SourceInfo>();
                         CustomizedSources[itemID] = sources;
                     }
 
@@ -358,9 +527,9 @@ namespace MoreObtainingTooltips {
             }
         }
 
-        private void AddSource(Dictionary<int, List<int>> sourcesDict, int key, int sourceValue) {
+        private void AddSource(Dictionary<int, List<SourceInfo>> sourcesDict, int key, SourceInfo sourceValue) {
             if (!sourcesDict.ContainsKey(key)) {
-                sourcesDict[key] = new List<int>();
+                sourcesDict[key] = new List<SourceInfo>();
             }
 
             if (!sourcesDict[key].Contains(sourceValue)) {
@@ -460,7 +629,7 @@ namespace MoreObtainingTooltips {
             { ItemID.ObsidianSwordfish, new FishingInfo("ExtremelyRare", true, "Lava") },
             { ItemID.AlchemyTable, new FishingInfo("VeryRare", false, "Dungeon") },
             { ItemID.Oyster, new FishingInfo("Uncommon", false, "Oasis") },
-            { ItemID.CombatBookVolumeTwo, new FishingInfo("ExtremelyRare", false, "BloodMoon") },
+            { ItemID.CombatBook, new FishingInfo("ExtremelyRare", false, "BloodMoon") },
             { ItemID.BottomlessLavaBucket, new FishingInfo("ExtremelyRare", false, "Lava") },
             { ItemID.LavaAbsorbantSponge, new FishingInfo("ExtremelyRare", false, "Lava") },
             { ItemID.DemonConch, new FishingInfo("ExtremelyRare", false, "Lava") },
@@ -497,7 +666,7 @@ namespace MoreObtainingTooltips {
 
             // == Junk ==
             { ItemID.OldShoe, new FishingInfo("Junk", false, "AnyLowPower") },
-            { ItemID.Seaweed, new FishingInfo("Junk", false, "AnyLowPower") },
+            { ItemID.FishingSeaweed, new FishingInfo("Junk", false, "AnyLowPower") },
             { ItemID.TinCan, new FishingInfo("Junk", false, "AnyLowPower") },
             { ItemID.JojaCola, new FishingInfo("Junk", false, "AnyLowPower") },
 
@@ -547,7 +716,7 @@ namespace MoreObtainingTooltips {
         }
 
         public static void InitializeCustomizedSources() {
-            CustomizedSources = new Dictionary<int, List<string>>();
+            CustomizedSources = new Dictionary<int, List<SourceInfo>>();
 
             AddCustomizedSourceToItems("AnglerQuest",
                 // Guaranteed Rewards
@@ -591,49 +760,59 @@ namespace MoreObtainingTooltips {
                 ItemID.DevDye
             );
 
+            // 任意树 (Any trees)
+            AddCustomizedSourceToItems("ShakingAnyTree",
+                ItemID.Acorn, ItemID.Wood, ItemID.Apple, ItemID.Apricot, ItemID.Grapefruit,
+                ItemID.Lemon, ItemID.Peach, ItemID.LivingWoodWand,
+                ItemID.LeafWand, ItemID.EucaluptusSap
+            );
+            
             // 森林树 (Forest trees)
             AddCustomizedSourceToItems("ShakingForestTree",
                 ItemID.Acorn, ItemID.Wood, ItemID.Apple, ItemID.Apricot, ItemID.Grapefruit,
-                ItemID.Lemon, ItemID.Peach, ItemID.RottenEgg, ItemID.LivingWoodWand,
+                ItemID.Lemon, ItemID.Peach,  ItemID.LivingWoodWand,
                 ItemID.LeafWand, ItemID.EucaluptusSap
             );
 
             // 红木树 (Mahogany trees)
             AddCustomizedSourceToItems("ShakingMahoganyTree",
-                ItemID.RichMahogany, ItemID.Mango, ItemID.Pineapple, ItemID.RottenEgg,
+                ItemID.RichMahogany, ItemID.Mango, ItemID.Pineapple,
                 ItemID.LivingMahoganyWand, ItemID.LivingMahoganyLeafWand
             );
 
             // 乌木树 (Ebonwood trees)
             AddCustomizedSourceToItems("ShakingEbonwoodTree",
-                ItemID.Ebonwood, ItemID.Elderberry, ItemID.BlackCurrant, ItemID.RottenEgg
+                ItemID.Ebonwood, ItemID.Elderberry, ItemID.BlackCurrant
             );
 
             // 暗影木树 (Shadewood trees)
             AddCustomizedSourceToItems("ShakingShadewoodTree",
-                ItemID.Shadewood, ItemID.BloodOrange, ItemID.Rambutan, ItemID.RottenEgg
+                ItemID.Shadewood, ItemID.BloodOrange, ItemID.Rambutan
             );
 
             // 珍珠木树 (Pearlwood trees)
             AddCustomizedSourceToItems("ShakingPearlwoodTree",
-                ItemID.Acorn, ItemID.Pearlwood, ItemID.Dragonfruit, ItemID.Starfruit,
-                ItemID.RottenEgg
+                ItemID.Acorn, ItemID.Pearlwood, ItemID.Dragonfruit, ItemID.Starfruit
             );
 
             // 棕榈树 (Palm trees)
             AddCustomizedSourceToItems("ShakingPalmTree",
-                ItemID.PalmWood, ItemID.Coconut, ItemID.Banana, ItemID.RottenEgg
+                ItemID.PalmWood, ItemID.Coconut, ItemID.Banana
+            );
+
+            // 针叶树 (Boreal trees)
+            AddCustomizedSourceToItems("ShakingBorealTree",
+                ItemID.BorealWood, ItemID.Cherry, ItemID.Plum
             );
 
             // 灰烬树 (Ash trees)
             AddCustomizedSourceToItems("ShakingAshTree",
-                ItemID.Acorn, ItemID.AshWood, ItemID.SpicyPepper, ItemID.Pomegranate,
-                ItemID.RottenEgg
+                ItemID.Acorn, ItemID.AshWood, ItemID.SpicyPepper, ItemID.Pomegranate
             );
 
             // 巨型夜光蘑菇 (Giant Glowing Mushrooms)
             AddCustomizedSourceToItems("ShakingGlowingMushroom",
-                ItemID.MushroomGrassSeeds, ItemID.GlowingMushroom, ItemID.RottenEgg
+                ItemID.MushroomGrassSeeds, ItemID.GlowingMushroom
             );
 
             // --- Breaking Pots ---
@@ -689,8 +868,25 @@ namespace MoreObtainingTooltips {
                 ItemID.Torch, ItemID.Bomb, ItemID.Rope
             );
 
+            // 阿比盖尔的花 (在墓碑附近生成)
+            AddCustomizedSourceToItems("AbigailsFlower", ItemID.AbigailsFlower);
 
+            // 机械矿车 (专家/大师模式下击败所有机械 Boss 后获得)
+            AddCustomizedSourceToItems("MechCart", ItemID.MinecartMech);
 
+            // 火把神的恩宠 (在“火把神”事件中存活下来获得)
+            AddCustomizedSourceToItems("TorchGodsFavor", ItemID.TorchGodsFavor);
+
+            // 花园侏儒 (暴露在阳光下的侏儒变成)
+            AddCustomizedSourceToItems("GardenGnome", ItemID.GardenGnome);
+
+            // 熟棉花糖 (在篝火上使用棉花糖)
+            AddCustomizedSourceToItems("CookedMarshmallow", ItemID.CookedMarshmallow);
+
+            // 魔法南瓜子 (树妖在血月期间出售)
+            AddCustomizedSourceToItems("MagicalPumpkinSeed", ItemID.MagicalPumpkinSeed);
+
+            AddCustomizedSourceToItems("PlayerDeath",321,1173,1174,1175,1176,1177,3230,3231,3229,3233,3232);
 
 
             string templateBiomeHardmode = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.DroppedInBiomeHardmode");
@@ -730,8 +926,8 @@ namespace MoreObtainingTooltips {
             foreach (int itemID in itemIDs) {
                 var source = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");
 
-                if (!CustomizedSources.TryGetValue(itemID, out List<string> sources)) {
-                    sources = new List<string>();
+                if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
+                    sources = new List<SourceInfo>();
                     CustomizedSources[itemID] = sources;
                 }
 
@@ -744,8 +940,8 @@ namespace MoreObtainingTooltips {
         public static void AddCustomizedSourceToItemsString(string source, params int[] itemIDs) {
             foreach (int itemID in itemIDs) {
 
-                if (!CustomizedSources.TryGetValue(itemID, out List<string> sources)) {
-                    sources = new List<string>();
+                if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
+                    sources = new List<SourceInfo>();
                     CustomizedSources[itemID] = sources;
                 }
 

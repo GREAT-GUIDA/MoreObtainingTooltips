@@ -1,4 +1,5 @@
 Tooltips: {
+	Breakable: World generated tile
 	Craftable: Craftable
 	Shimmered: Shimmered
 	Decrafted: Decrafted
@@ -9,7 +10,9 @@ Tooltips: {
 	Purchasable: Purchasable
 	Droppable: Droppable by NPC
 	Catchable: Catchable from NPC
+	ObtainableAsBanner: NPC Banner
 	FishingCatch: Fishing Catch
+	ObtainedByBreaking: Obtained by breaking world generated {0}
 	CraftedWith: Crafted with {0}
 	ShimmeredFrom: Shimmered from {0}
 	DecraftedFrom: Decrafted from {0}
@@ -19,6 +22,7 @@ Tooltips: {
 	ChlorophyteExtractedFrom: Extracted from {0} in [i:5296]
 	SoldBy: Sold by {0}
 	DroppedBy: Dropped by {0}
+	ObtainedAfterKilling: Obtained after killing {0} {1}
 	CatchedFrom: Catched from {0}
 	# {0} = Rarity, {1} = Environment
 	FishingCatchDetails: "{0} fishing catch in {1}"
@@ -26,7 +30,9 @@ Tooltips: {
 	PressShiftHint: <Press Shift for obtaining info>
 	More: ... ({0} more)
 	AnyNPC: Any NPC
+	WhenPlayerHave: When player have {0}
 	UnknownChest: Unknown Chest
+	MusicBoxFormat: Obtained by recording {0} using [i:576]
 	// Quests & NPCs
 	AnglerQuest: Reward of Angler quests
 	DyeTraderQuest: Reward of Dye Trader quests
@@ -38,6 +44,7 @@ Tooltips: {
 	ShakingShadewoodTree: Drop from shaking Shadewood trees
 	ShakingPearlwoodTree: Drop from shaking Pearlwood trees
 	ShakingPalmTree: Drop from shaking Palm trees
+	ShakingBorealTree: Drop from shaking Boreal trees
 	ShakingAshTree: Drop from shaking Ash trees
 	ShakingGlowingMushroom: Drop from shaking Giant Glowing Mushrooms
 	// Breaking Objects
@@ -45,6 +52,13 @@ Tooltips: {
 	BreakingShadowOrb: Drop from breaking Shadow Orbs
 	BreakingCrimsonHeart: Drop from breaking Crimson Hearts
 	SlimeDrops: Carried by certain slimes
+	AbigailsFlower: "Spawns on grass near a Tombstone"
+    MechCart: "Obtained by using [i:5289]"
+    TorchGodsFavor: "Obtained by surviving the Torch God event"
+    GardenGnome: "Created when a Gnome is exposed to sunlight"
+    CookedMarshmallow: "Obtained by using a Marshmallow on a Campfire"
+    MagicalPumpkinSeed: "Obtained by breaking pumpkin"
+	PlayerDeath: Drop when a player dies
 	DroppedInBiomeHardmode: Dropped by any enemy in {0} during Hardmode
 	DroppedInBiome: Dropped by any enemy in {0}
 	DroppedDuringEvent: Dropped by any enemy during {0}
@@ -192,6 +206,16 @@ Configs: {
 
 		MaxTooltipLength: {
 			Label: Automatic Line Length
+			Tooltip: ""
+		}
+
+		BreakableTiles: {
+			Label: Breakable Tiles
+			Tooltip: ""
+		}
+
+		Banners: {
+			Label: Banners
 			Tooltip: ""
 		}
 	}

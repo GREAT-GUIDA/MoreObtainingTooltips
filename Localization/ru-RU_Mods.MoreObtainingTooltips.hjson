@@ -26,10 +26,8 @@ Tooltips: {
 	
 	# Hint text
 	PressShiftHint: <Нажмите Shift для расширенных подсказок>
-
 	AnyNPC: "любого НИПа "
 	More: … ({0} и более)
-
     # Quests & NPCs
 	AnglerQuest: Награда заданий рыбака
 	DyeTraderQuest: Награда заданий торговца красителями
@@ -49,7 +47,12 @@ Tooltips: {
 	BreakingPots: Drop from breaking Pots Выпадат при разбиении горшков
 	BreakingShadowOrb: Выпадает при разрушении Теневых сфер
 	BreakingCrimsonHeart: Выпадает при разрушении Багряных сердец
-
+	SlimeDrops: Переносится слизнями
+	DroppedInBiomeHardmode: Выпадает из любого существа в {0} в хардмоде
+	DroppedInBiome: Выпадает из любого существа в {0}
+	DroppedDuringEvent: Выпадает из любого существа при событии {0}
+	CascadeDrop: Выпадает из любого существа в Преисподней после победы над Скелетроном
+	YeletsDrop: Выпадает из любого существа в Джунглях после победы над механическими боссами
 	Fishing: {
 		ListSeparator: ", "
 		HardmodeSuffix: " (Хардмод)"
@@ -206,7 +209,15 @@ Configs: {
 			Tooltip: ""
 		}
 	}
+	ShowShopCondition: {
+        Label: Отображать условия магазина
+        Tooltip: ""
+    }
 
+    MaxTooltipLength: {
+        Label: Автоматическая длина строки
+        Tooltip: ""
+    }
 	ItemShowMode: {
 		Tooltip: ""
 		Icon.Label: Значок

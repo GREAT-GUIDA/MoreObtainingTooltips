@@ -29,11 +29,12 @@ namespace MoreObtainingTooltips {
         public override void Action(CommandCaller caller, string input, string[] args) {
             var noSourceItems = new List<string>();
 
-            for (int itemType = ItemID.Count; itemType < ItemLoader.ItemCount; itemType++) {
+            for (int itemType = ItemID.None + 1; itemType < ItemLoader.ItemCount; itemType++) {
                 var item = ContentSamples.ItemsByType[itemType];
-                if (item.IsAir) continue;
+                if (item.IsAir || item.type != itemType || (item.createTile <= 246 && item.createTile >= 240)) continue;
 
                 bool hasSource =
+                    BreakTileSources.ContainsKey(itemType) ||
                     CraftingSources.ContainsKey(itemType) ||
                     ShimmerSources.ContainsKey(itemType) ||
                     DecraftSources.ContainsKey(itemType) ||
@@ -44,6 +45,7 @@ namespace MoreObtainingTooltips {
                     ShopSources.ContainsKey(itemType) ||
                     DropSources.ContainsKey(itemType) ||
                     CatchNPCSources.ContainsKey(itemType) ||
+                    NPCBannerSources.ContainsKey(itemType) ||
                     FishingSources.ContainsKey(itemType) ||
                     CustomizedSources.ContainsKey(itemType);
 
@@ -54,7 +56,10 @@ namespace MoreObtainingTooltips {
 
             if (noSourceItems.Count > 0) {
                 Main.NewText($"[c/FF0000:Found {noSourceItems.Count} unobtainable items:]");
-                Main.NewText(string.Join(", ", noSourceItems));
+                for (int i = 0; i < noSourceItems.Count; i += 50) {
+                    var currentChunk = noSourceItems.Skip(i).Take(50);
+                    Main.NewText(string.Join(", ", currentChunk));
+                }
             }
         }
     }

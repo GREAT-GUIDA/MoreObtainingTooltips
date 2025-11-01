@@ -55,11 +55,13 @@ namespace MoreObtainingTooltips
         [DefaultValue(100)]
         [Range(80, 500)]
         public int MaxTooltipLength { get; set; } = 100;
-
+        
+        public TooltipSettings BreakableTiles { get; set; } = new() { MaxCount = 0 };
         public TooltipSettings Crafting { get; set; } = new();
         public TooltipSettings Shops { get; set; } = new();
         public TooltipSettings Drops { get; set; } = new();
         public TooltipSettings Catching { get; set; } = new();
+        public TooltipSettings Banners { get; set; } = new();
         public TooltipSettings Shimmering { get; set; } = new();
         public TooltipSettings Decrafting { get; set; } = new();
         public TooltipSettings GrabBags { get; set; } = new();

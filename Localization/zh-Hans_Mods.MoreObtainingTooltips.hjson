@@ -1,4 +1,5 @@
 Tooltips: {
+	Breakable: 自然生成物块
 	Craftable: 可制作
 	Shimmered: 可微光嬗变获得
 	Decrafted: 可微光分解获得
@@ -9,7 +10,9 @@ Tooltips: {
 	Purchasable: 可购买
 	Droppable: 可由NPC掉落
 	Catchable: 可捕捉
+	ObtainableAsBanner: NPC旗帜
 	FishingCatch: 渔获
+	ObtainedByBreaking: 破坏自然生成的 {0} 获得
 	CraftedWith: 由 {0} 制作
 	ShimmeredFrom: 由 {0} 嬗变
 	DecraftedFrom: 由 {0} 分解
@@ -19,6 +22,7 @@ Tooltips: {
 	ChlorophyteExtractedFrom: 在[i:5296]中从 {0} 提炼
 	SoldBy: 由 {0} 出售
 	DroppedBy: 由 {0} 掉落
+	ObtainedAfterKilling: 杀死 {0} 个 {1} 后获得
 	CatchedFrom: 从 {0} 处捕捉
 	# {0} = Rarity, {1} = Environment
 	FishingCatchDetails: 在 {1} 的 {0} 渔获
@@ -27,6 +31,9 @@ Tooltips: {
 	More: ... (还有{0}个)
 	AnyNPC: 任意NPC
 	UnknownChest: 未知箱子
+	MusicBoxFormat: 用[i:576]录制 {0} 获得
+	WhenPlayerHave: 当玩家持有 {0}
+
 	// Quests & NPCs
 	AnglerQuest: 渔夫任务奖励
 	DyeTraderQuest: 染料商任务奖励
@@ -38,6 +45,7 @@ Tooltips: {
 	ShakingShadewoodTree: 摇晃暗影木树获得
 	ShakingPearlwoodTree: 摇晃珍珠木树获得
 	ShakingPalmTree: 摇晃棕榈树获得
+	ShakingBorealTree: 摇晃针叶树获得
 	ShakingAshTree: 摇晃灰烬树获得
 	ShakingGlowingMushroom: 摇晃巨型夜光蘑菇获得
 	// Breaking Objects
@@ -45,6 +53,13 @@ Tooltips: {
 	BreakingShadowOrb: 打破暗影珠获得
 	BreakingCrimsonHeart: 打破猩红心脏获得
 	SlimeDrops: 由部分史莱姆携带
+	AbigailsFlower: "在墓石旁边的草地上生成"
+    MechCart: "使用[i:5289]获得"
+    TorchGodsFavor: "在火把神事件中幸存后获得"
+    GardenGnome: "由暴露在阳光下的侏儒转化而来"
+    CookedMarshmallow: "在篝火上使用棉花糖获得"
+    MagicalPumpkinSeed: "打破南瓜获得"
+	PlayerDeath: 玩家死亡掉落
 	DroppedInBiomeHardmode: 在困难模式中由{0}的任何敌人掉落
 	DroppedInBiome: 由{0}的任何敌人掉落
 	DroppedDuringEvent: 在{0}期间由任何敌人掉落
@@ -192,6 +207,16 @@ Configs: {
 
 		MaxTooltipLength: {
 			Label: 自动分行长度
+			// Tooltip: ""
+		}
+
+		BreakableTiles: {
+			// Label: Breakable Tiles
+			// Tooltip: ""
+		}
+
+		Banners: {
+			// Label: Banners
 			// Tooltip: ""
 		}
 	}

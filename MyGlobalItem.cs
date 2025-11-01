@@ -9,28 +9,33 @@ using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Terraria.Localization;
 using System;
+using Terraria.Map;
+using Terraria.ModLoader.IO;
 
 namespace MoreObtainingTooltips {
     public class MyGlobalItem : GlobalItem {
         private static TooltipConfig _config;
         private static TooltipConfig Config => _config ??= ModContent.GetInstance<TooltipConfig>();
 
-        private string GenerateItemSourceTooltip(string format, List<int> sources, int maxCount) {
+        private string GenerateItemSourceTooltip(string format, List<SourceInfo> sources, int maxCount) {
             var distinctSources = sources.Distinct().ToList();
             if (!distinctSources.Any()) return null;
 
             var itemIcons = new StringBuilder();
-            int countToShow = System.Math.Min(distinctSources.Count, maxCount);
+            int countToShow = Math.Min(distinctSources.Count, maxCount);
 
             for (int i = 0; i < countToShow; i++) {
-                if (Config.ItemShowMode == ItemShowMode.Icon)itemIcons.Append($"[i:{distinctSources[i]}]");
-                if (Config.ItemShowMode == ItemShowMode.Name) { 
-                    if (i != 0) itemIcons.Append(", "); 
-                    itemIcons.Append(Lang.GetItemNameValue(distinctSources[i])); 
+                int itemId = distinctSources[i].id;
+                if (Config.ItemShowMode == ItemShowMode.Icon) {
+                    itemIcons.Append($"[i:{itemId}]");
+                }
+                if (Config.ItemShowMode == ItemShowMode.Name) {
+                    if (i != 0) itemIcons.Append(", ");
+                    itemIcons.Append(Lang.GetItemNameValue(itemId));
                 }
                 if (Config.ItemShowMode == ItemShowMode.IconAndName) {
-                    itemIcons.Append($"[i:{distinctSources[i]}]");
-                    itemIcons.Append($"({Lang.GetItemNameValue(distinctSources[i])})");
+                    itemIcons.Append($"[i:{itemId}]");
+                    itemIcons.Append($"({Lang.GetItemNameValue(itemId)})");
                 }
             }
 
@@ -43,8 +48,12 @@ namespace MoreObtainingTooltips {
             return tooltipText.ToString();
         }
 
-        private string GenerateNpcSourceTooltip(string format, List<int> npcIds, int maxCount) {
-            var uniqueNames = npcIds.Select(Lang.GetNPCNameValue).Distinct().ToList();
+        private string GenerateNpcSourceTooltip(string format, List<SourceInfo> npcSources, int maxCount) {
+            var uniqueNames = npcSources
+                .Select(source => Lang.GetNPCNameValue(source.id))
+                .Distinct()
+                .ToList();
+
             if (!uniqueNames.Any()) return null;
 
             string nameList = string.Join(", ", uniqueNames.Take(maxCount));
@@ -57,7 +66,7 @@ namespace MoreObtainingTooltips {
             return tooltipText.ToString();
         }
 
-        private string GenerateShopSourceTooltip(string format, List<ShopSourceInfo> sources, int maxCount) {
+        private string GenerateShopSourceTooltip(string format, List<SourceInfo> sources, int maxCount) {
             var distinctSources = sources.Distinct().ToList();
             if (!distinctSources.Any()) return null;
 
@@ -66,11 +75,10 @@ namespace MoreObtainingTooltips {
 
             for (int i = 0; i < countToShow; i++) {
                 var source = distinctSources[i];
-                string npcName = Lang.GetNPCNameValue(source.NpcId);
-                if (source.NpcId == -1) npcName = GetText("AnyNPC");
-                if (source.Conditions.Any() && Config.ShowShopCondition) {
-                    string conditionText = string.Join(", ", source.Conditions);
-                    tooltipParts.Add($"{npcName} ({conditionText})");
+                string npcName = Lang.GetNPCNameValue(source.id);
+                if (source.id == -1) npcName = GetText("AnyNPC");
+                if (source.str != "" && Config.ShowShopCondition) {
+                    tooltipParts.Add($"{npcName} ({source.str})");
                 } else {
                     tooltipParts.Add(npcName);
                 }
@@ -86,6 +94,32 @@ namespace MoreObtainingTooltips {
             return tooltipText.ToString();
         }
 
+        private string GenerateTileSourceTooltip(string format, List<SourceInfo> tileTypes, int maxCount) {
+            var uniqueNames = tileTypes
+                .Select(sourceInfo => {
+                    int tileId = sourceInfo.id;
+                    string name = Lang.GetMapObjectName(MapHelper.TileToLookup(tileId, 0));
+                    if (string.IsNullOrEmpty(name)) {
+                        name = TileID.Search.GetName(tileId);
+                    }
+                    return name;
+                })
+                .Distinct()
+                .ToList();
+
+            if (!uniqueNames.Any()) return null;
+
+            string nameList = string.Join(", ", uniqueNames.Take(maxCount));
+            var tooltipText = new StringBuilder(string.Format(format, nameList));
+
+            // .Count() 改为 .Count 效率更高
+            if (uniqueNames.Count > maxCount) {
+                tooltipText.Append(Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.More", uniqueNames.Count - maxCount));
+            }
+
+            return tooltipText.ToString();
+        }
+
         private static string GetText(string key) => Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
@@ -94,7 +128,6 @@ namespace MoreObtainingTooltips {
             }
 
             var obtainingMethods = new List<string>();
-            //Main.NewText(NPCShopDatabase.AllShops.ToArray()[24].FullName);
 
             void TryAddMethod(string line) {
                 if (string.IsNullOrEmpty(line)) {
@@ -138,6 +171,10 @@ namespace MoreObtainingTooltips {
                 }
             }
 
+            // Breaking Tiles
+            if (Config.BreakableTiles.Enabled && BreakTileSources.TryGetValue(item.type, out var tileSources))
+                TryAddMethod(Config.BreakableTiles.MaxCount == 0 ? GetText("Breakable") : GenerateTileSourceTooltip(GetText("ObtainedByBreaking"), tileSources, Config.BreakableTiles.MaxCount));
+
             // Crafting
             if (Config.Crafting.Enabled && CraftingSources.TryGetValue(item.type, out var ingredients))
                 TryAddMethod(Config.Crafting.MaxCount == 0 ? GetText("Craftable") : GenerateItemSourceTooltip(GetText("CraftedWith"), ingredients, Config.Crafting.MaxCount));
@@ -177,7 +214,15 @@ namespace MoreObtainingTooltips {
             // Catching
             if (Config.Catching.Enabled && CatchNPCSources.TryGetValue(item.type, out var catchNpcSources))
                 TryAddMethod(Config.Catching.MaxCount == 0 ? GetText("Catchable") : GenerateNpcSourceTooltip(GetText("CatchedFrom"), catchNpcSources, Config.Catching.MaxCount));
-            
+
+            if (Config.Banners.Enabled && NPCBannerSources.TryGetValue(item.type, out var bannerSources)) {
+                if(Config.Banners.MaxCount == 0) TryAddMethod(GetText("ObtainableAsBanner"));
+                else {
+                    var str = GenerateNpcSourceTooltip("{0}", bannerSources, Config.Banners.MaxCount);
+                    TryAddMethod(string.Format(GetText("ObtainedAfterKilling"), bannerSources[0].num.ToString(), str));
+                }
+            }
+
             // Fishing
             if (Config.Fishing.Enabled && FishingSources.TryGetValue(item.type, out FishingInfo fishingInfo)) {
                 if (Config.Fishing.MaxCount == 0) {
@@ -199,9 +244,9 @@ namespace MoreObtainingTooltips {
             }
 
             // Customized
-            if (Config.Customized.Enabled && CustomizedSources.TryGetValue(item.type, out List<string> keys)) {
+            if (Config.Customized.Enabled && CustomizedSources.TryGetValue(item.type, out List<SourceInfo> keys)) {
                 for (int i = 0; i < keys.Count; i++) {
-                    obtainingMethods.Add($"{keys[i]}");
+                    obtainingMethods.Add($"{keys[i].str}");
                 }
             }
 
