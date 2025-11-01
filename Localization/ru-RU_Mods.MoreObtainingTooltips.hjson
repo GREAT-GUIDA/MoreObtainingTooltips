@@ -1,4 +1,5 @@
 Tooltips: {
+	// Breakable: World generated tile
 	Craftable: Создаваемое
 	Shimmered: Трансмутабельное
 	Decrafted: Разбираемое
@@ -9,8 +10,9 @@ Tooltips: {
 	Purchasable: Приобретаемое
 	Droppable: Выпадающее из существ
 	Catchable: Пойманное существо
+	// ObtainableAsBanner: NPC Banner
 	FishingCatch: Вылавливаемое
-	
+	// ObtainedByBreaking: Obtained by breaking world generated {0}
 	CraftedWith: Создано из {0}
 	ShimmeredFrom: Трансмутировано из {0}
 	DecraftedFrom: Разобрано из {0}
@@ -20,78 +22,88 @@ Tooltips: {
 	ChlorophyteExtractedFrom: Обогащено из {0} в [i:5269]
 	SoldBy: Продаётся у {0}
 	DroppedBy: Выпадает из {0}
+	// ObtainedAfterKilling: Obtained after killing {0} {1}
 	CatchedFrom: Поймано {0}
-	# {0} = Редкость, {1} = Окружение
+	# {0} = Rarity, {1} = Environment
 	FishingCatchDetails: "{0}, поймано в {1}"
-	
 	# Hint text
 	PressShiftHint: <Нажмите Shift для расширенных подсказок>
-	AnyNPC: "любого НИПа "
 	More: … ({0} и более)
-    # Quests & NPCs
+	AnyNPC: "любого НИПа "
+	// WhenPlayerHave: When player have {0}
+	// UnknownChest: Unknown Chest
+	// MusicBoxFormat: Obtained by recording {0} using [i:576]
+	// Quests & NPCs
 	AnglerQuest: Награда заданий рыбака
 	DyeTraderQuest: Награда заданий торговца красителями
 	PartyGirlGiven: Выдаётся Тусовщицей
-	
-	# Shaking Trees
+	// Shaking Trees
 	ShakingForestTree: Выпадает при тряске лесных деревьев
 	ShakingMahoganyTree: Выпадает при тряске красных деревьев
 	ShakingEbonwoodTree: Выпадает при тряске чёрных деревьев
 	ShakingShadewoodTree: Выпадает при тряске мрачных деревьев
 	ShakingPearlwoodTree: Выпадает при тряске жемчужных деревьев
 	ShakingPalmTree: Выпадает при тряске пальм
-    ShakingAshTree: Выпадает при тряске ясеней
+	// ShakingBorealTree: Drop from shaking Boreal trees
+	ShakingAshTree: Выпадает при тряске ясеней
 	ShakingGlowingMushroom: Выпадает при тряске больших светящихся грибов
-	
-	# Breaking Objects
+	// Breaking Objects
 	BreakingPots: Drop from breaking Pots Выпадат при разбиении горшков
 	BreakingShadowOrb: Выпадает при разрушении Теневых сфер
 	BreakingCrimsonHeart: Выпадает при разрушении Багряных сердец
 	SlimeDrops: Переносится слизнями
+	// AbigailsFlower: Spawns on grass near a Tombstone
+	// MechCart: Obtained by using [i:5289]
+	// TorchGodsFavor: Obtained by surviving the Torch God event
+	// GardenGnome: Created when a Gnome is exposed to sunlight
+	// CookedMarshmallow: Obtained by using a Marshmallow on a Campfire
+	// MagicalPumpkinSeed: Obtained by breaking pumpkin
+	// PlayerDeath: Drop when a player dies
 	DroppedInBiomeHardmode: Выпадает из любого существа в {0} в хардмоде
 	DroppedInBiome: Выпадает из любого существа в {0}
 	DroppedDuringEvent: Выпадает из любого существа при событии {0}
 	CascadeDrop: Выпадает из любого существа в Преисподней после победы над Скелетроном
 	YeletsDrop: Выпадает из любого существа в Джунглях после победы над механическими боссами
+
 	Fishing: {
 		ListSeparator: ", "
 		HardmodeSuffix: " (Хардмод)"
 
 		Rarities: {
-            Plentiful: Распротранённый
-            Common: Обычный
-            Uncommon: Необычный
-            Rare: Редкий
-            VeryRare: Очень редкий
-            ExtremelyRare: Крайне редкий
-            Junk: Мусор
-            Quest: Предмет задания
-        }
-		
+			Plentiful: Распротранённый
+			Common: Обычный
+			Uncommon: Необычный
+			Rare: Редкий
+			VeryRare: Очень редкий
+			ExtremelyRare: Крайне редкий
+			Junk: Мусор
+			Quest: Предмет задания
+		}
+
 		Environments: {
-          Any: любом биоме
-          AnyLowPower: любом биоме
-          Underground: "{$Bestiary_Biomes.Underground}"
-          Cavern: "{$Bestiary_Biomes.Caverns}"
-          Underworld: "{$Bestiary_Biomes.TheUnderworld}"
-          Surface: "{$Bestiary_Biomes.Surface}"
-          Forest: Лес
-          Jungle: "{$Bestiary_Biomes.Jungle}"
-          Sky: "{$Bestiary_Biomes.Sky}"
-          Snow: "{$Bestiary_Biomes.Snow}"
-          Corruption: "{$Bestiary_Biomes.TheCorruption}"
-          Crimson: "{$Bestiary_Biomes.Crimson}"
-          Hallow: "{$Bestiary_Biomes.Hallow}"
-          Desert: "{$Bestiary_Biomes.Desert}"
-          Oasis: "{$Bestiary_Biomes.Oasis}"
-          Honey: меду
-          Lava: лаве
-          Ocean: "{$Bestiary_Biomes.Ocean}"
-          Dungeon: "{$Bestiary_Biomes.TheDungeon}"
-          GlowingMushroom: Грибницах
-          LargeLakes: больших озёрах
-          OverlappingIceEvilHallow: Смешанных Ледяном и мировом зле/Освящении биомах
-          BloodMoon: "{$Bestiary_Events.BloodMoon}"
+			Any: любом биоме
+			AnyLowPower: любом биоме
+			Underground: "{$Bestiary_Biomes.Underground}"
+			Cavern: "{$Bestiary_Biomes.Caverns}"
+			Underworld: "{$Bestiary_Biomes.TheUnderworld}"
+			Surface: "{$Bestiary_Biomes.Surface}"
+			Forest: Лес
+			Jungle: "{$Bestiary_Biomes.Jungle}"
+			Sky: "{$Bestiary_Biomes.Sky}"
+			Snow: "{$Bestiary_Biomes.Snow}"
+			Corruption: "{$Bestiary_Biomes.TheCorruption}"
+			Crimson: "{$Bestiary_Biomes.Crimson}"
+			Hallow: "{$Bestiary_Biomes.Hallow}"
+			Desert: "{$Bestiary_Biomes.Desert}"
+			Oasis: "{$Bestiary_Biomes.Oasis}"
+			Honey: меду
+			Lava: лаве
+			Ocean: "{$Bestiary_Biomes.Ocean}"
+			Dungeon: "{$Bestiary_Biomes.TheDungeon}"
+			GlowingMushroom: Грибницах
+			LargeLakes: больших озёрах
+			OverlappingIceEvilHallow: Смешанных Ледяном и мировом зле/Освящении биомах
+			BloodMoon: "{$Bestiary_Events.BloodMoon}"
 		}
 	}
 }
@@ -187,6 +199,26 @@ Configs: {
 			Label: Режим отображения предметов
 			Tooltip: ""
 		}
+
+		ShowShopCondition: {
+			// Label: Show Shop Condition
+			// Tooltip: ""
+		}
+
+		MaxTooltipLength: {
+			// Label: Automatic Line Length
+			// Tooltip: ""
+		}
+
+		BreakableTiles: {
+			// Label: Breakable Tiles
+			// Tooltip: ""
+		}
+
+		Banners: {
+			// Label: Banners
+			// Tooltip: ""
+		}
 	}
 
 	TooltipShowMode: {
@@ -209,15 +241,7 @@ Configs: {
 			Tooltip: ""
 		}
 	}
-	ShowShopCondition: {
-        Label: Отображать условия магазина
-        Tooltip: ""
-    }
 
-    MaxTooltipLength: {
-        Label: Автоматическая длина строки
-        Tooltip: ""
-    }
 	ItemShowMode: {
 		Tooltip: ""
 		Icon.Label: Значок

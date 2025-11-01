@@ -15,6 +15,7 @@ Shows how to obtain an item in its tooltip.
 [*][b]Fishing:[/b] Displays the required biome and rarity to fish up the item (Currently Vanilla Only).
 [*][b]Extractinator:[/b] Displays the blocks that can be extracted to obtain the item.
 [*][b]Chlorophyte Extractinator:[/b] Displays the blocks that can be extracted to obtain the item.
+[*][b]World Generated：[/b]If it is generated as tiles when generating the world.
 [*][b]Special Obtaining:[/b] Angler quests, Dye Trader trades, Party Girl gifts, and more (Currently Vanilla Only).
 [/list]
 
@@ -24,7 +25,6 @@ Unless specified as Vanilla Only, all information supports mods.
 [b]Future Plans:[/b]
 [list]
 [*][b]Special Mod Support[/b]
-[*][b]Tile Breaking Drops[/b]
 [*]And other various obtaining methods
 [/list]
 
@@ -51,6 +51,7 @@ More Obtaining Tooltips 物品获取提示
 [*][b]渔获：[/b]显示钓到该物品所需的生物群落和稀有度（目前仅支持原版）
 [*][b]提炼机：[/b]显示可以从提炼机中提炼出该物品的物块
 [*][b]叶绿提炼机 ：[/b]显示可以从叶绿提炼机中提炼出该物品的物块
+[*][b]自然生成：[/b]是否在生成世界时以图块形式生成
 [*][b]特殊获取：[/b]渔夫任务，染料商兑换，派对女孩给予，以及别的什么（目前仅支持原版）
 
 所有信息的显示均可配置，可以收起信息
@@ -59,7 +60,6 @@ More Obtaining Tooltips 物品获取提示
 [b]未来可能添加：[/b]
 
 [*][b]特殊Mod支持[/b]
-[*][b]挖掘图块掉落[/b]
 [*]或者别的什么乱七八糟获取途径
 
 Discord: https://discord.gg/eVR94prTmq

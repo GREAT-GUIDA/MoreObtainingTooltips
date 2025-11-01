@@ -52,12 +52,12 @@ Tooltips: {
 	BreakingShadowOrb: Drop from breaking Shadow Orbs
 	BreakingCrimsonHeart: Drop from breaking Crimson Hearts
 	SlimeDrops: Carried by certain slimes
-	AbigailsFlower: "Spawns on grass near a Tombstone"
-    MechCart: "Obtained by using [i:5289]"
-    TorchGodsFavor: "Obtained by surviving the Torch God event"
-    GardenGnome: "Created when a Gnome is exposed to sunlight"
-    CookedMarshmallow: "Obtained by using a Marshmallow on a Campfire"
-    MagicalPumpkinSeed: "Obtained by breaking pumpkin"
+	AbigailsFlower: Spawns on grass near a Tombstone
+	MechCart: Obtained by using [i:5289]
+	TorchGodsFavor: Obtained by surviving the Torch God event
+	GardenGnome: Created when a Gnome is exposed to sunlight
+	CookedMarshmallow: Obtained by using a Marshmallow on a Campfire
+	MagicalPumpkinSeed: Obtained by breaking pumpkin
 	PlayerDeath: Drop when a player dies
 	DroppedInBiomeHardmode: Dropped by any enemy in {0} during Hardmode
 	DroppedInBiome: Dropped by any enemy in {0}

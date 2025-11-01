@@ -30,10 +30,9 @@ Tooltips: {
 	PressShiftHint: <按住 Shift 查看获取方式>
 	More: ... (还有{0}个)
 	AnyNPC: 任意NPC
+	WhenPlayerHave: 当玩家持有 {0}
 	UnknownChest: 未知箱子
 	MusicBoxFormat: 用[i:576]录制 {0} 获得
-	WhenPlayerHave: 当玩家持有 {0}
-
 	// Quests & NPCs
 	AnglerQuest: 渔夫任务奖励
 	DyeTraderQuest: 染料商任务奖励
