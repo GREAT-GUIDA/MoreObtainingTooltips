@@ -40,28 +40,6 @@ namespace MoreObtainingTooltips {
                 IsHardmode = isHardmode;
             }
         }
-        public struct ShopSourceInfo {
-            public int NpcId;
-            public List<string> Conditions;
-
-            public ShopSourceInfo(int npcId, List<string> conditions) {
-                NpcId = npcId;
-                Conditions = conditions;
-            }
-        }
-
-        public struct ChestSourceInfo {
-            public int ItemId;
-            public bool Locked;
-            public List<string> Name;
-
-            public ChestSourceInfo(int itemID, bool locked, List<string> name) {
-                ItemId = itemID;
-                Locked = locked;
-                Name = name;
-            }
-        }
-
         public struct SourceInfo {
             public int id;
             public int num;
@@ -104,7 +82,7 @@ namespace MoreObtainingTooltips {
         public static Dictionary<int, List<SourceInfo>> ChestSources { get; private set; } = new();
         public static Dictionary<int, List<SourceInfo>> CatchNPCSources { get; private set; } = new();
         public static Dictionary<int, List<SourceInfo>> NPCBannerSources { get; private set; } = new();
-        public static Dictionary<int, FishingInfo> FishingSources { get; private set; } = new();
+        public static Dictionary<int, List<SourceInfo>> FishingSources { get; private set; } = new();
         public static Dictionary<int, List<SourceInfo>> ExtractinatorSources { get; private set; } = new();
         public static Dictionary<int, List<SourceInfo>> ChlorophyteExtractinatorSources { get; private set; } = new();
         public static Dictionary<int, List<SourceInfo>> CustomizedSources { get; private set; } = new();
@@ -157,7 +135,7 @@ namespace MoreObtainingTooltips {
 
         // 加载世界数据
         public override void LoadWorldData(TagCompound tag) {
-            ChestSources.Clear();
+            /*ChestSources.Clear();
             _loadedChestSourcesFromTag = false;
             if (tag.TryGet("ChestSources", out List<TagCompound> list)) {
                 foreach (var entryTag in list) {
@@ -166,7 +144,7 @@ namespace MoreObtainingTooltips {
                     }
                 }
                 _loadedChestSourcesFromTag = true;
-            }
+            }*/
 
             BreakTileSources.Clear();
             _loadedBreakTileSourcesFromTag = false;
@@ -346,7 +324,7 @@ namespace MoreObtainingTooltips {
                     Chest chest = Main.chest[i];
                     if (chest == null) continue;
                     Tile tile = Main.tile[chest.x, chest.y];
-                    if (tile == null || !TileID.Sets.IsAContainer[tile.type]) continue;
+                    if (tile == null || (!TileID.Sets.IsAContainer[tile.type] && !Main.tileContainer[tile.type])) continue;
 
                     int style = TileObjectData.GetTileStyle(tile);
                     int chestItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, style);
@@ -384,7 +362,7 @@ namespace MoreObtainingTooltips {
                     if(name == string.Empty) name = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.UnknownChest");
 
                     if (chestItemID <= ItemID.None) {
-                        chestItemID = -1;
+                        chestItemID = 1;
                     }
                     foreach (Item item in chest.item) {
                         if (item != null && !item.IsAir) {
@@ -507,7 +485,28 @@ namespace MoreObtainingTooltips {
                     AddCustomizedSourceToItemsString(tooltip, type);
                 }
             }
+            var tempPlayer = new Player();
 
+            var vanillaJourneyItems = new List<Item> {new Item(ItemID.IronShortsword), new Item(ItemID.IronPickaxe), new Item(ItemID.IronAxe), new Item(ItemID.IronHammer), new Item(ItemID.Torch), 
+                new Item(ItemID.BabyBirdStaff), new Item(ItemID.Rope), new Item(ItemID.MagicMirror), new Item(ItemID.GrapplingHook), new Item(ItemID.CreativeWings), new Item(ItemID.WolfMountItem)};
+
+            var vanillaItems = new List<Item> { new Item(ItemID.CopperShortsword), new Item(ItemID.CopperPickaxe), new Item(ItemID.CopperAxe) };
+
+            var normalPlayer = new Player();
+            List<Item> normalStartingItems = PlayerLoader.GetStartingItems(normalPlayer, vanillaItems);
+            var normalStartingItemIds = normalStartingItems.Select(item => item.type).ToHashSet();
+
+            var journeyPlayer = new Player { difficulty = 3 };
+            List<Item> journeyStartingItems = PlayerLoader.GetStartingItems(journeyPlayer, vanillaJourneyItems);
+            var journeyStartingItemIds = journeyStartingItems.Select(item => item.type).Distinct().ToList();
+
+            int[] journeyExclusiveItemIds = journeyStartingItemIds.Where(id => !normalStartingItemIds.Contains(id)).ToArray();
+
+            string normalSourceText = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.StartingItem");
+            AddCustomizedSourceToItemsString(normalSourceText, normalStartingItemIds.ToArray());
+
+            string journeySourceText = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.JourneyStartingItem");
+            AddCustomizedSourceToItemsString(journeySourceText, journeyExclusiveItemIds);
 
             foreach (var registration in RegisteredCustomSources) {
                 string fullKey = registration.Key;
@@ -576,144 +575,280 @@ namespace MoreObtainingTooltips {
                 }
             }
         }
-
-        public static void InitializeFishingSources() {
-            FishingSources = new Dictionary<int, FishingInfo>{
-            // == Fish ==
-            { ItemID.ArmoredCavefish, new FishingInfo("Uncommon", false, "Underground", "Cavern", "Underworld") },
-            { ItemID.AtlanticCod, new FishingInfo("Common", false, "Snow") },
-            { ItemID.Bass, new FishingInfo("Plentiful", false, "Any") },
-            { ItemID.BlueJellyfish, new FishingInfo("Rare", false, "Underground", "Cavern", "Underworld") },
-            { ItemID.ChaosFish, new FishingInfo("VeryRare", false, "Underground", "Hallow") },
-            { ItemID.CrimsonTigerfish, new FishingInfo("Common", false, "Crimson") },
-            { ItemID.Damselfish, new FishingInfo("Uncommon", false, "Sky") },
-            { ItemID.DoubleCod, new FishingInfo("Uncommon", false, "Surface", "Jungle") },
-            { ItemID.Ebonkoi, new FishingInfo("Uncommon", false, "Corruption") },
-            { ItemID.FlarefinKoi, new FishingInfo("VeryRare", false, "Lava") },
-            { ItemID.Flounder, new FishingInfo("Plentiful", false, "Oasis") },
-            { ItemID.FrostMinnow, new FishingInfo("Uncommon", false, "Snow") },
-            { ItemID.GoldenCarp, new FishingInfo("ExtremelyRare", false, "Underground") },
-            { ItemID.GreenJellyfish, new FishingInfo("Rare", true, "Underground") },
-            { ItemID.Hemopiranha, new FishingInfo("Uncommon", false, "Crimson") },
-            { ItemID.Honeyfin, new FishingInfo("Uncommon", false, "Honey") },
-            { ItemID.NeonTetra, new FishingInfo("Common", false, "Jungle") },
-            { ItemID.Obsidifish, new FishingInfo("Rare", false, "Lava") },
-            { ItemID.PinkJellyfish, new FishingInfo("Rare", false, "Ocean") },
-            { ItemID.PrincessFish, new FishingInfo("Uncommon", false, "Hallow") },
-            { ItemID.Prismite, new FishingInfo("Rare", false, "Hallow") },
-            { ItemID.RedSnapper, new FishingInfo("Common", false, "Ocean") },
-            { ItemID.RockLobster, new FishingInfo("Plentiful", false, "Oasis") },
-            { ItemID.Salmon, new FishingInfo("Common", false, "Forest", "LargeLakes") },
-            { ItemID.Shrimp, new FishingInfo("Uncommon", false, "Ocean") },
-            { ItemID.SpecularFish, new FishingInfo("Common", false, "Underground", "Cavern") },
-            { ItemID.Stinkfish, new FishingInfo("Rare", false, "Underground") },
-            { ItemID.Trout, new FishingInfo("Plentiful", false, "Forest", "Snow") },
-            { ItemID.Tuna, new FishingInfo("Common", false, "Ocean") },
-            { ItemID.VariegatedLardfish, new FishingInfo("Uncommon", false, "Underground", "Jungle") },
-
-            // == Usable Items ==
-            { ItemID.FrogLeg, new FishingInfo("ExtremelyRare", false, "Any") },
-            { ItemID.BalloonPufferfish, new FishingInfo("ExtremelyRare", false, "Any") },
-            { ItemID.BombFish, new FishingInfo("Uncommon", false, "Any") },
-            { ItemID.PurpleClubberfish, new FishingInfo("Rare", false, "Corruption") },
-            { ItemID.ReaverShark, new FishingInfo("VeryRare", false, "Ocean") },
-            { ItemID.Rockfish, new FishingInfo("VeryRare", false, "Underground") },
-            { ItemID.SawtoothShark, new FishingInfo("VeryRare", false, "Ocean") },
-            { ItemID.FrostDaggerfish, new FishingInfo("Uncommon", false, "Snow") },
-            { ItemID.Swordfish, new FishingInfo("Rare", false, "Ocean") },
-            { ItemID.ZephyrFish, new FishingInfo("ExtremelyRare", false, "Any") },
-            { ItemID.Toxikarp, new FishingInfo("ExtremelyRare", true, "Corruption") },
-            { ItemID.Bladetongue, new FishingInfo("ExtremelyRare", true, "Crimson") },
-            { ItemID.CrystalSerpent, new FishingInfo("ExtremelyRare", true, "Hallow") },
-            { ItemID.ScalyTruffle, new FishingInfo("ExtremelyRare", true, "OverlappingIceEvilHallow") },
-            { ItemID.ObsidianSwordfish, new FishingInfo("ExtremelyRare", true, "Lava") },
-            { ItemID.AlchemyTable, new FishingInfo("VeryRare", false, "Dungeon") },
-            { ItemID.Oyster, new FishingInfo("Uncommon", false, "Oasis") },
-            { ItemID.CombatBook, new FishingInfo("ExtremelyRare", false, "BloodMoon") },
-            { ItemID.BottomlessLavaBucket, new FishingInfo("ExtremelyRare", false, "Lava") },
-            { ItemID.LavaAbsorbantSponge, new FishingInfo("ExtremelyRare", false, "Lava") },
-            { ItemID.DemonConch, new FishingInfo("ExtremelyRare", false, "Lava") },
-            { ItemID.DreadoftheRedSea, new FishingInfo("ExtremelyRare", false, "BloodMoon") },
-            { ItemID.LadyOfTheLake, new FishingInfo("ExtremelyRare", true, "Hallow") },
-
-            // == Crates ==
-            { ItemID.WoodenCrate, new FishingInfo("Plentiful", false, "Any") },
-            { ItemID.WoodenCrateHard, new FishingInfo("Plentiful", true, "Any") },
-            { ItemID.IronCrate, new FishingInfo("Uncommon", false, "Any") },
-            { ItemID.IronCrateHard, new FishingInfo("Uncommon", true, "Any") },
-            { ItemID.GoldenCrate, new FishingInfo("VeryRare", false, "Any") },
-            { ItemID.GoldenCrateHard, new FishingInfo("VeryRare", true, "Any") },
-            { ItemID.JungleFishingCrate, new FishingInfo("Rare", false, "Jungle") },
-            { ItemID.JungleFishingCrateHard, new FishingInfo("Rare", true, "Jungle") },
-            { ItemID.FloatingIslandFishingCrate, new FishingInfo("Rare", false, "Sky") },
-            { ItemID.FloatingIslandFishingCrateHard, new FishingInfo("Rare", true, "Sky") },
-            { ItemID.CorruptFishingCrate, new FishingInfo("Rare", false, "Corruption") },
-            { ItemID.CorruptFishingCrateHard, new FishingInfo("Rare", true, "Corruption") },
-            { ItemID.CrimsonFishingCrate, new FishingInfo("Rare", false, "Crimson") },
-            { ItemID.CrimsonFishingCrateHard, new FishingInfo("Rare", true, "Crimson") },
-            { ItemID.HallowedFishingCrate, new FishingInfo("Rare", false, "Hallow") },
-            { ItemID.HallowedFishingCrateHard, new FishingInfo("Rare", true, "Hallow") },
-            { ItemID.DungeonFishingCrate, new FishingInfo("Rare", false, "Dungeon") },
-            { ItemID.DungeonFishingCrateHard, new FishingInfo("Rare", true, "Dungeon") },
-            { ItemID.FrozenCrate, new FishingInfo("Rare", false, "Snow") },
-            { ItemID.FrozenCrateHard, new FishingInfo("Rare", true, "Snow") },
-            { ItemID.OasisCrate, new FishingInfo("Rare", false, "Desert") },
-            { ItemID.OasisCrateHard, new FishingInfo("Rare", true, "Desert") },
-            { ItemID.LavaCrate, new FishingInfo("Plentiful", false, "Lava") },
-            { ItemID.LavaCrateHard, new FishingInfo("Plentiful", true, "Lava") },
-            { ItemID.OceanCrate, new FishingInfo("Rare", false, "Ocean") },
-            { ItemID.OceanCrateHard, new FishingInfo("Rare", true, "Ocean") },
-
-            // == Junk ==
-            { ItemID.OldShoe, new FishingInfo("Junk", false, "AnyLowPower") },
-            { ItemID.FishingSeaweed, new FishingInfo("Junk", false, "AnyLowPower") },
-            { ItemID.TinCan, new FishingInfo("Junk", false, "AnyLowPower") },
-            { ItemID.JojaCola, new FishingInfo("Junk", false, "AnyLowPower") },
-
-            // == Quest Fish ==
-            { ItemID.AmanitaFungifin, new FishingInfo("Quest", false, "GlowingMushroom") },
-            { ItemID.Angelfish, new FishingInfo("Quest", false, "Sky") },
-            { ItemID.Batfish, new FishingInfo("Quest", false, "Underground", "Cavern") },
-            { ItemID.BloodyManowar, new FishingInfo("Quest", false, "Crimson") },
-            { ItemID.Bonefish, new FishingInfo("Quest", false, "Underground", "Cavern") },
-            { ItemID.BumblebeeTuna, new FishingInfo("Quest", false, "Honey") },
-            { ItemID.Bunnyfish, new FishingInfo("Quest", false, "Surface", "Forest") },
-            { ItemID.CapnTunabeard, new FishingInfo("Quest", true, "Ocean") },
-            { ItemID.Catfish, new FishingInfo("Quest", false, "Surface", "Jungle") },
-            { ItemID.Cloudfish, new FishingInfo("Quest", false, "Sky") },
-            { ItemID.Clownfish, new FishingInfo("Quest", false, "Ocean") },
-            { ItemID.Cursedfish, new FishingInfo("Quest", true, "Corruption") },
-            { ItemID.DemonicHellfish, new FishingInfo("Quest", false, "Cavern", "Underworld") },
-            { ItemID.Derpfish, new FishingInfo("Quest", true, "Surface", "Jungle") },
-            { ItemID.Dirtfish, new FishingInfo("Quest", false, "Surface", "Underground") },
-            { ItemID.DynamiteFish, new FishingInfo("Quest", false, "Surface") },
-            { ItemID.EaterofPlankton, new FishingInfo("Quest", false, "Corruption") },
-            { ItemID.FallenStarfish, new FishingInfo("Quest", false, "Sky", "Surface") },
-            { ItemID.Fishotron, new FishingInfo("Quest", false, "Cavern") },
-            { ItemID.Fishron, new FishingInfo("Quest", true, "Underground", "Snow") },
-            { ItemID.GuideVoodooFish, new FishingInfo("Quest", false, "Cavern", "Underworld") },
-            { ItemID.Harpyfish, new FishingInfo("Quest", false, "Sky", "Surface") },
-            { ItemID.Hungerfish, new FishingInfo("Quest", true, "Cavern", "Underworld") },
-            { ItemID.Ichorfish, new FishingInfo("Quest", true, "Crimson") },
-            { ItemID.InfectedScabbardfish, new FishingInfo("Quest", false, "Corruption") },
-            { ItemID.Jewelfish, new FishingInfo("Quest", false, "Underground", "Cavern") },
-            { ItemID.MirageFish, new FishingInfo("Quest", true, "Underground", "Hallow") },
-            { ItemID.Mudfish, new FishingInfo("Quest", false, "Jungle") },
-            { ItemID.MutantFlinxfin, new FishingInfo("Quest", false, "Underground", "Snow") },
-            { ItemID.Pengfish, new FishingInfo("Quest", false, "Surface", "Snow") },
-            { ItemID.Pixiefish, new FishingInfo("Quest", true, "Surface", "Hallow") },
-            { ItemID.ScarabFish, new FishingInfo("Quest", false, "Desert") },
-            { ItemID.ScorpioFish, new FishingInfo("Quest", false, "Desert") },
-            { ItemID.Slimefish, new FishingInfo("Quest", false, "Surface", "Forest") },
-            { ItemID.Spiderfish, new FishingInfo("Quest", false, "Underground", "Cavern") },
-            { ItemID.TheFishofCthulu, new FishingInfo("Quest", false, "Surface") },
-            { ItemID.TropicalBarracuda, new FishingInfo("Quest", false, "Surface", "Jungle") },
-            { ItemID.TundraTrout, new FishingInfo("Quest", false, "Surface", "Snow") },
-            { ItemID.UnicornFish, new FishingInfo("Quest", true, "Hallow") },
-            { ItemID.Wyverntail, new FishingInfo("Quest", true, "Sky") },
-            { ItemID.ZombieFish, new FishingInfo("Quest", false, "Surface", "Forest") }
-        };
+        public enum FishingRarity {
+            Junk = -1, Quest = 0, Plentiful = 1, Common = 2, Uncommon = 3,
+            Rare = 4, VeryRare = 5, ExtremelyRare = 6
         }
+        public enum FishingSuffix {
+            None, Hardmode, 
+            PostWoS, PostSupreme,
+            PostDesertScourge, PostLeviathan, PostProvidence
+        }
+        public static void InitializeFishingSources() {
+            FishingSources = new Dictionary<int, List<SourceInfo>>();
+
+            void AddFishingSource(int itemId, FishingRarity rarity, FishingSuffix suffix, params string[] environmentKeys) {
+                string localizedEnvironmentText = string.Join(", ", environmentKeys
+                    .Select(key => {
+                        string localizationKey = $"Bestiary_Biomes.{key}";
+                        string localizedText = Language.GetTextValue(localizationKey);
+                        if (localizedText != localizationKey) {
+                            return localizedText;
+                        }
+                        localizationKey = $"Bestiary_Events.{key}";
+                        localizedText = Language.GetTextValue(localizationKey);
+                        if (localizedText != localizationKey) {
+                            return localizedText;
+                        }
+                        localizationKey = $"Bestiary_Times.{key}";
+                        localizedText = Language.GetTextValue(localizationKey);
+                        if (localizedText != localizationKey) {
+                            return localizedText;
+                        }
+                        return Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Environments.{key}");
+                    }));
+
+                var source = new SourceInfo(
+                    id: (int)rarity,                 // 存入稀有度ID
+                    num: (int)suffix,         // 存入是否为困难模式
+                    str: localizedEnvironmentText    // 直接存入处理好的环境字符串
+                );
+                FishingSources[itemId] = new List<SourceInfo> { source };
+            }
+            void AddModdedFishingSource(string modName, string itemName, FishingRarity rarity, FishingSuffix suffix, params string[] environmentKeys) {
+                int itemId = MoreObtainingTooltips.GetModItemId(modName, itemName);
+                if (itemId > 0) {
+                    AddFishingSource(itemId, rarity, suffix, environmentKeys);
+                }
+            }
+            AddFishingSource(ItemID.ArmoredCavefish, FishingRarity.Uncommon, FishingSuffix.None, "Underground", "Cavern", "TheUnderworld");
+            AddFishingSource(ItemID.AtlanticCod, FishingRarity.Common, FishingSuffix.None, "Snow");
+            AddFishingSource(ItemID.Bass, FishingRarity.Plentiful, FishingSuffix.None, "Any");
+            AddFishingSource(ItemID.BlueJellyfish, FishingRarity.Rare, FishingSuffix.None, "Underground", "Cavern", "TheUnderworld");
+            AddFishingSource(ItemID.ChaosFish, FishingRarity.VeryRare, FishingSuffix.None, "Underground", "Hallow");
+            AddFishingSource(ItemID.CrimsonTigerfish, FishingRarity.Common, FishingSuffix.None, "Crimson");
+            AddFishingSource(ItemID.Damselfish, FishingRarity.Uncommon, FishingSuffix.None, "Sky");
+            AddFishingSource(ItemID.DoubleCod, FishingRarity.Uncommon, FishingSuffix.None, "Surface", "Jungle");
+            AddFishingSource(ItemID.Ebonkoi, FishingRarity.Uncommon, FishingSuffix.None, "TheCorruption");
+            AddFishingSource(ItemID.FlarefinKoi, FishingRarity.VeryRare, FishingSuffix.None, "Lava");
+            AddFishingSource(ItemID.Flounder, FishingRarity.Plentiful, FishingSuffix.None, "Oasis");
+            AddFishingSource(ItemID.FrostMinnow, FishingRarity.Uncommon, FishingSuffix.None, "Snow");
+            AddFishingSource(ItemID.GoldenCarp, FishingRarity.ExtremelyRare, FishingSuffix.None, "Underground");
+            AddFishingSource(ItemID.GreenJellyfish, FishingRarity.Rare, FishingSuffix.Hardmode, "Underground");
+            AddFishingSource(ItemID.Hemopiranha, FishingRarity.Uncommon, FishingSuffix.None, "Crimson");
+            AddFishingSource(ItemID.Honeyfin, FishingRarity.Uncommon, FishingSuffix.None, "Honey");
+            AddFishingSource(ItemID.NeonTetra, FishingRarity.Common, FishingSuffix.None, "Jungle");
+            AddFishingSource(ItemID.Obsidifish, FishingRarity.Rare, FishingSuffix.None, "Lava");
+            AddFishingSource(ItemID.PinkJellyfish, FishingRarity.Rare, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.PrincessFish, FishingRarity.Uncommon, FishingSuffix.None, "Hallow");
+            AddFishingSource(ItemID.Prismite, FishingRarity.Rare, FishingSuffix.None, "Hallow");
+            AddFishingSource(ItemID.RedSnapper, FishingRarity.Common, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.RockLobster, FishingRarity.Plentiful, FishingSuffix.None, "Oasis");
+            AddFishingSource(ItemID.Salmon, FishingRarity.Common, FishingSuffix.None, "Forest", "LargeLakes");
+            AddFishingSource(ItemID.Shrimp, FishingRarity.Uncommon, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.SpecularFish, FishingRarity.Common, FishingSuffix.None, "Underground", "Cavern");
+            AddFishingSource(ItemID.Stinkfish, FishingRarity.Rare, FishingSuffix.None, "Underground");
+            AddFishingSource(ItemID.Trout, FishingRarity.Plentiful, FishingSuffix.None, "Forest", "Snow");
+            AddFishingSource(ItemID.Tuna, FishingRarity.Common, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.VariegatedLardfish, FishingRarity.Uncommon, FishingSuffix.None, "Underground", "Jungle");
+
+            // == Usable Items (功能性物品) ==
+            AddFishingSource(ItemID.FrogLeg, FishingRarity.ExtremelyRare, FishingSuffix.None, "Any");
+            AddFishingSource(ItemID.BalloonPufferfish, FishingRarity.ExtremelyRare, FishingSuffix.None, "Any");
+            AddFishingSource(ItemID.BombFish, FishingRarity.Uncommon, FishingSuffix.None, "Any");
+            AddFishingSource(ItemID.PurpleClubberfish, FishingRarity.Rare, FishingSuffix.None, "TheCorruption");
+            AddFishingSource(ItemID.ReaverShark, FishingRarity.VeryRare, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.Rockfish, FishingRarity.VeryRare, FishingSuffix.None, "Underground");
+            AddFishingSource(ItemID.SawtoothShark, FishingRarity.VeryRare, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.FrostDaggerfish, FishingRarity.Uncommon, FishingSuffix.None, "Snow");
+            AddFishingSource(ItemID.Swordfish, FishingRarity.Rare, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.ZephyrFish, FishingRarity.ExtremelyRare, FishingSuffix.None, "Any");
+            AddFishingSource(ItemID.Toxikarp, FishingRarity.ExtremelyRare, FishingSuffix.Hardmode, "TheCorruption");
+            AddFishingSource(ItemID.Bladetongue, FishingRarity.ExtremelyRare, FishingSuffix.Hardmode, "Crimson");
+            AddFishingSource(ItemID.CrystalSerpent, FishingRarity.ExtremelyRare, FishingSuffix.Hardmode, "Hallow");
+            AddFishingSource(ItemID.ScalyTruffle, FishingRarity.ExtremelyRare, FishingSuffix.Hardmode, "CorruptIce", "CrimsonIce", "HallowIce");
+            AddFishingSource(ItemID.ObsidianSwordfish, FishingRarity.ExtremelyRare, FishingSuffix.Hardmode, "Lava");
+            AddFishingSource(ItemID.AlchemyTable, FishingRarity.VeryRare, FishingSuffix.None, "TheDungeon");
+            AddFishingSource(ItemID.Oyster, FishingRarity.Uncommon, FishingSuffix.None, "Oasis");
+            AddFishingSource(ItemID.CombatBook, FishingRarity.ExtremelyRare, FishingSuffix.None, "BloodMoon");
+            AddFishingSource(ItemID.BottomlessLavaBucket, FishingRarity.ExtremelyRare, FishingSuffix.None, "Lava");
+            AddFishingSource(ItemID.LavaAbsorbantSponge, FishingRarity.ExtremelyRare, FishingSuffix.None, "Lava");
+            AddFishingSource(ItemID.DemonConch, FishingRarity.ExtremelyRare, FishingSuffix.None, "Lava");
+            AddFishingSource(ItemID.DreadoftheRedSea, FishingRarity.ExtremelyRare, FishingSuffix.None, "BloodMoon");
+            AddFishingSource(ItemID.LadyOfTheLake, FishingRarity.ExtremelyRare, FishingSuffix.Hardmode, "Hallow");
+
+            // == Crates (板条箱) ==
+            AddFishingSource(ItemID.WoodenCrate, FishingRarity.Plentiful, FishingSuffix.None, "Any");
+            AddFishingSource(ItemID.WoodenCrateHard, FishingRarity.Plentiful, FishingSuffix.Hardmode, "Any");
+            AddFishingSource(ItemID.IronCrate, FishingRarity.Uncommon, FishingSuffix.None, "Any");
+            AddFishingSource(ItemID.IronCrateHard, FishingRarity.Uncommon, FishingSuffix.Hardmode, "Any");
+            AddFishingSource(ItemID.GoldenCrate, FishingRarity.VeryRare, FishingSuffix.None, "Any");
+            AddFishingSource(ItemID.GoldenCrateHard, FishingRarity.VeryRare, FishingSuffix.Hardmode, "Any");
+            AddFishingSource(ItemID.JungleFishingCrate, FishingRarity.Rare, FishingSuffix.None, "Jungle");
+            AddFishingSource(ItemID.JungleFishingCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "Jungle");
+            AddFishingSource(ItemID.FloatingIslandFishingCrate, FishingRarity.Rare, FishingSuffix.None, "Sky");
+            AddFishingSource(ItemID.FloatingIslandFishingCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "Sky");
+            AddFishingSource(ItemID.CorruptFishingCrate, FishingRarity.Rare, FishingSuffix.None, "TheCorruption");
+            AddFishingSource(ItemID.CorruptFishingCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "TheCorruption");
+            AddFishingSource(ItemID.CrimsonFishingCrate, FishingRarity.Rare, FishingSuffix.None, "Crimson");
+            AddFishingSource(ItemID.CrimsonFishingCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "Crimson");
+            AddFishingSource(ItemID.HallowedFishingCrate, FishingRarity.Rare, FishingSuffix.None, "Hallow");
+            AddFishingSource(ItemID.HallowedFishingCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "Hallow");
+            AddFishingSource(ItemID.DungeonFishingCrate, FishingRarity.Rare, FishingSuffix.None, "TheDungeon");
+            AddFishingSource(ItemID.DungeonFishingCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "TheDungeon");
+            AddFishingSource(ItemID.FrozenCrate, FishingRarity.Rare, FishingSuffix.None, "Snow");
+            AddFishingSource(ItemID.FrozenCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "Snow");
+            AddFishingSource(ItemID.OasisCrate, FishingRarity.Rare, FishingSuffix.None, "Desert");
+            AddFishingSource(ItemID.OasisCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "Desert");
+            AddFishingSource(ItemID.LavaCrate, FishingRarity.Plentiful, FishingSuffix.None, "Lava");
+            AddFishingSource(ItemID.LavaCrateHard, FishingRarity.Plentiful, FishingSuffix.Hardmode, "Lava");
+            AddFishingSource(ItemID.OceanCrate, FishingRarity.Rare, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.OceanCrateHard, FishingRarity.Rare, FishingSuffix.Hardmode, "Ocean");
+
+            // == Junk (垃圾) ==
+            AddFishingSource(ItemID.OldShoe, FishingRarity.Junk, FishingSuffix.None, "AnyLowPower");
+            AddFishingSource(ItemID.Seaweed, FishingRarity.Junk, FishingSuffix.None, "AnyLowPower");
+            AddFishingSource(ItemID.TinCan, FishingRarity.Junk, FishingSuffix.None, "AnyLowPower");
+            AddFishingSource(ItemID.JojaCola, FishingRarity.Junk, FishingSuffix.None, "AnyLowPower");
+
+            // == Quest Fish (任务鱼) ==
+            AddFishingSource(ItemID.AmanitaFungifin, FishingRarity.Quest, FishingSuffix.None, "SurfaceMushroom", "UndergroundMushroom");
+            AddFishingSource(ItemID.Angelfish, FishingRarity.Quest, FishingSuffix.None, "Sky");
+            AddFishingSource(ItemID.Batfish, FishingRarity.Quest, FishingSuffix.None, "Underground", "Cavern");
+            AddFishingSource(ItemID.BloodyManowar, FishingRarity.Quest, FishingSuffix.None, "Crimson");
+            AddFishingSource(ItemID.Bonefish, FishingRarity.Quest, FishingSuffix.None, "Underground", "Cavern");
+            AddFishingSource(ItemID.BumblebeeTuna, FishingRarity.Quest, FishingSuffix.None, "Honey");
+            AddFishingSource(ItemID.Bunnyfish, FishingRarity.Quest, FishingSuffix.None, "Surface", "Forest");
+            AddFishingSource(ItemID.CapnTunabeard, FishingRarity.Quest, FishingSuffix.Hardmode, "Ocean");
+            AddFishingSource(ItemID.Catfish, FishingRarity.Quest, FishingSuffix.None, "Surface", "Jungle");
+            AddFishingSource(ItemID.Cloudfish, FishingRarity.Quest, FishingSuffix.None, "Sky");
+            AddFishingSource(ItemID.Clownfish, FishingRarity.Quest, FishingSuffix.None, "Ocean");
+            AddFishingSource(ItemID.Cursedfish, FishingRarity.Quest, FishingSuffix.Hardmode, "TheCorruption");
+            AddFishingSource(ItemID.DemonicHellfish, FishingRarity.Quest, FishingSuffix.None, "Cavern", "TheUnderworld");
+            AddFishingSource(ItemID.Derpfish, FishingRarity.Quest, FishingSuffix.Hardmode, "Surface", "Jungle");
+            AddFishingSource(ItemID.Dirtfish, FishingRarity.Quest, FishingSuffix.None, "Surface", "Underground");
+            AddFishingSource(ItemID.DynamiteFish, FishingRarity.Quest, FishingSuffix.None, "Surface");
+            AddFishingSource(ItemID.EaterofPlankton, FishingRarity.Quest, FishingSuffix.None, "TheCorruption");
+            AddFishingSource(ItemID.FallenStarfish, FishingRarity.Quest, FishingSuffix.None, "Sky", "Surface");
+            AddFishingSource(ItemID.Fishotron, FishingRarity.Quest, FishingSuffix.None, "Cavern");
+            AddFishingSource(ItemID.Fishron, FishingRarity.Quest, FishingSuffix.Hardmode, "Underground", "Snow");
+            AddFishingSource(ItemID.GuideVoodooFish, FishingRarity.Quest, FishingSuffix.None, "Cavern", "TheUnderworld");
+            AddFishingSource(ItemID.Harpyfish, FishingRarity.Quest, FishingSuffix.None, "Sky", "Surface");
+            AddFishingSource(ItemID.Hungerfish, FishingRarity.Quest, FishingSuffix.Hardmode, "Cavern", "TheUnderworld");
+            AddFishingSource(ItemID.Ichorfish, FishingRarity.Quest, FishingSuffix.Hardmode, "Crimson");
+            AddFishingSource(ItemID.InfectedScabbardfish, FishingRarity.Quest, FishingSuffix.None, "TheCorruption");
+            AddFishingSource(ItemID.Jewelfish, FishingRarity.Quest, FishingSuffix.None, "Underground", "Cavern");
+            AddFishingSource(ItemID.MirageFish, FishingRarity.Quest, FishingSuffix.Hardmode, "Underground", "Hallow");
+            AddFishingSource(ItemID.Mudfish, FishingRarity.Quest, FishingSuffix.None, "Jungle");
+            AddFishingSource(ItemID.MutantFlinxfin, FishingRarity.Quest, FishingSuffix.None, "Underground", "Snow");
+            AddFishingSource(ItemID.Pengfish, FishingRarity.Quest, FishingSuffix.None, "Surface", "Snow");
+            AddFishingSource(ItemID.Pixiefish, FishingRarity.Quest, FishingSuffix.Hardmode, "Surface", "Hallow");
+            AddFishingSource(ItemID.ScarabFish, FishingRarity.Quest, FishingSuffix.None, "Desert");
+            AddFishingSource(ItemID.ScorpioFish, FishingRarity.Quest, FishingSuffix.None, "Desert");
+            AddFishingSource(ItemID.Slimefish, FishingRarity.Quest, FishingSuffix.None, "Surface", "Forest");
+            AddFishingSource(ItemID.Spiderfish, FishingRarity.Quest, FishingSuffix.None, "Underground", "Cavern");
+            AddFishingSource(ItemID.TheFishofCthulu, FishingRarity.Quest, FishingSuffix.None, "Surface");
+            AddFishingSource(ItemID.TropicalBarracuda, FishingRarity.Quest, FishingSuffix.None, "Surface", "Jungle");
+            AddFishingSource(ItemID.TundraTrout, FishingRarity.Quest, FishingSuffix.None, "Surface", "Snow");
+            AddFishingSource(ItemID.UnicornFish, FishingRarity.Quest, FishingSuffix.Hardmode, "Hallow");
+            AddFishingSource(ItemID.Wyverntail, FishingRarity.Quest, FishingSuffix.Hardmode, "Sky");
+            AddFishingSource(ItemID.ZombieFish, FishingRarity.Quest, FishingSuffix.None, "Surface", "Forest");
+
+
+            // --- Continent of Journey Mod Integration---
+            string hj = "ContinentOfJourney";
+            AddModdedFishingSource(hj, "AnglerCoin", FishingRarity.Rare, FishingSuffix.None, "Any");
+            AddModdedFishingSource(hj, "AnglerGoldCoin", FishingRarity.Rare, FishingSuffix.Hardmode, "Any");
+            AddModdedFishingSource(hj, "ForeverCrate", FishingRarity.Rare, FishingSuffix.PostWoS, "Oasis");
+            AddModdedFishingSource(hj, "CountdownCrate", FishingRarity.Rare, FishingSuffix.PostSupreme, "Oasis");
+            AddModdedFishingSource(hj, "CubistCrate", FishingRarity.Rare, FishingSuffix.PostWoS, "Snow");
+            AddModdedFishingSource(hj, "CubeCrate", FishingRarity.Rare, FishingSuffix.PostSupreme, "Snow");
+            AddModdedFishingSource(hj, "LivingCrate", FishingRarity.Rare, FishingSuffix.PostWoS, "Jungle");
+            AddModdedFishingSource(hj, "MembraneCrate", FishingRarity.Rare, FishingSuffix.PostSupreme, "Jungle");
+
+
+            // --- Calamity Mod Integration ---
+            string calamity = "CalamityMod";
+            // Quest Fish (任务鱼)
+            AddModdedFishingSource(calamity, "EutrophicSandfish", FishingRarity.Quest, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "SurfClam", FishingRarity.Quest, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "Serpentuna", FishingRarity.Quest, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "Brimlish", FishingRarity.Quest, FishingSuffix.None, "BrimstoneCrags");
+            AddModdedFishingSource(calamity, "Slurpfish", FishingRarity.Quest, FishingSuffix.None, "BrimstoneCrags");
+            // Crates (板条箱)
+            AddModdedFishingSource(calamity, "MonolithCrate", FishingRarity.Rare, FishingSuffix.None, "AstralInfection");
+            AddModdedFishingSource(calamity, "AstralCrate", FishingRarity.Rare, FishingSuffix.Hardmode, "AstralInfection");
+            AddModdedFishingSource(calamity, "EutrophicCrate", FishingRarity.Rare, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "PrismCrate", FishingRarity.Rare, FishingSuffix.Hardmode, "SunkenSea");
+            AddModdedFishingSource(calamity, "SulphurousCrate", FishingRarity.Rare, FishingSuffix.None, "SulphurousSea");
+            AddModdedFishingSource(calamity, "HydrothermalCrate", FishingRarity.Rare, FishingSuffix.Hardmode, "SulphurousSea");
+            AddModdedFishingSource(calamity, "SlagCrate", FishingRarity.Rare, FishingSuffix.None, "BrimstoneCrags", "Lava");
+            AddModdedFishingSource(calamity, "BrimstoneCrate", FishingRarity.Rare, FishingSuffix.Hardmode, "BrimstoneCrags", "Lava");
+
+            // Biome-Specific Fish (特定环境渔获)
+            // Sunken Sea (深渊)
+            AddModdedFishingSource(calamity, "PrismaticGuppy", FishingRarity.Plentiful, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "SunkenSailfish", FishingRarity.Uncommon, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "GreenwaveLoach", FishingRarity.VeryRare, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "RustedJingleBell", FishingRarity.ExtremelyRare, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "SparklingEmpress", FishingRarity.ExtremelyRare, FishingSuffix.None, "SunkenSea");
+            AddModdedFishingSource(calamity, "SerpentsBite", FishingRarity.ExtremelyRare, FishingSuffix.Hardmode, "SunkenSea");
+            // Astral Infection (星辉瘟疫)
+            AddModdedFishingSource(calamity, "TwinklingPollox", FishingRarity.Plentiful, FishingSuffix.None, "AstralInfection");
+            AddModdedFishingSource(calamity, "ProcyonidPrawn", FishingRarity.Uncommon, FishingSuffix.None, "AstralInfection");
+            AddModdedFishingSource(calamity, "ArcturusAstroidean", FishingRarity.Uncommon, FishingSuffix.None, "AstralInfection");
+            AddModdedFishingSource(calamity, "AldebaranAlewife", FishingRarity.Uncommon, FishingSuffix.None, "AstralInfection");
+            AddModdedFishingSource(calamity, "PolarisParrotfish", FishingRarity.ExtremelyRare, FishingSuffix.None, "AstralInfection");
+            AddModdedFishingSource(calamity, "GacruxianMollusk", FishingRarity.ExtremelyRare, FishingSuffix.None, "AstralInfection");
+            AddModdedFishingSource(calamity, "UrsaSergeant", FishingRarity.ExtremelyRare, FishingSuffix.None, "AstralInfection");
+            // Sulphurous Sea (硫磺海)
+            AddModdedFishingSource(calamity, "PlantyMush", FishingRarity.Common, FishingSuffix.None, "SulphurousSea");
+            AddModdedFishingSource(calamity, "AlluringBait", FishingRarity.ExtremelyRare, FishingSuffix.None, "SulphurousSea");
+            AddModdedFishingSource(calamity, "AbyssalAmulet", FishingRarity.ExtremelyRare, FishingSuffix.None, "SulphurousSea");
+            // Brimstone Crags (硫火之崖 - 岩浆)
+            AddModdedFishingSource(calamity, "CragBullhead", FishingRarity.Plentiful, FishingSuffix.None, "BrimstoneCrags", "Lava");
+            AddModdedFishingSource(calamity, "CoastalDemonfish", FishingRarity.Uncommon, FishingSuffix.None, "BrimstoneCrags", "Lava");
+            AddModdedFishingSource(calamity, "Havocfish", FishingRarity.Uncommon, FishingSuffix.Hardmode, "BrimstoneCrags", "Lava");
+            AddModdedFishingSource(calamity, "Bloodfin", FishingRarity.Rare, FishingSuffix.Hardmode, "BrimstoneCrags", "Lava");
+            AddModdedFishingSource(calamity, "CharredLasher", FishingRarity.VeryRare, FishingSuffix.Hardmode, "BrimstoneCrags", "Lava");
+            AddModdedFishingSource(calamity, "DragoonDrizzlefish", FishingRarity.ExtremelyRare, FishingSuffix.None, "BrimstoneCrags", "Lava");
+
+            // General Fish (通用渔获)
+            AddModdedFishingSource(calamity, "StuffedFish", FishingRarity.Uncommon, FishingSuffix.None, "Surface", "DayTime");
+            AddModdedFishingSource(calamity, "EnchantedStarfish", FishingRarity.Uncommon, FishingSuffix.None, "Surface", "NightTime");
+            AddModdedFishingSource(calamity, "GlimmeringGemfish", FishingRarity.Uncommon, FishingSuffix.None, "Caverns");
+            AddModdedFishingSource(calamity, "Spadefish", FishingRarity.VeryRare, FishingSuffix.None, "Underground");
+            AddModdedFishingSource(calamity, "Gorecodile", FishingRarity.Uncommon, FishingSuffix.None, "BloodMoon");
+            AddModdedFishingSource(calamity, "Shadowfish", FishingRarity.Uncommon, FishingSuffix.None, "Any", "Night");
+            AddModdedFishingSource(calamity, "FishofLight", FishingRarity.Uncommon, FishingSuffix.Hardmode, "Underground", "Hallow");
+            AddModdedFishingSource(calamity, "FishofNight", FishingRarity.Uncommon, FishingSuffix.Hardmode, "Underground", "TheCorruption", "Crimson");
+            AddModdedFishingSource(calamity, "SunbeamFish", FishingRarity.Uncommon, FishingSuffix.Hardmode, "Sky");
+            AddModdedFishingSource(calamity, "FishofFlight", FishingRarity.Uncommon, FishingSuffix.Hardmode, "Sky");
+            AddModdedFishingSource(calamity, "FishofEleum", FishingRarity.Uncommon, FishingSuffix.Hardmode, "Snow");
+            AddModdedFishingSource(calamity, "Floodtide", FishingRarity.ExtremelyRare, FishingSuffix.None, "Any");
+
+
+            // --- Secrets of the Shadows (SOTS) Mod Integration ---
+            const string sots = "SOTS";
+
+            // Standard Catches
+            AddModdedFishingSource(sots, "TinyPlanetFish", FishingRarity.Uncommon, FishingSuffix.None, "Sky");
+            AddModdedFishingSource(sots, "PistolShrimp", FishingRarity.Rare, FishingSuffix.None, "Ocean");
+            AddModdedFishingSource(sots, "CrabClaw", FishingRarity.VeryRare, FishingSuffix.None, "Ocean");
+            AddModdedFishingSource(sots, "PinkJellyfishStaff", FishingRarity.VeryRare, FishingSuffix.None, "Caverns");
+
+            // Pyramid Biome Catches
+            AddModdedFishingSource(sots, "SeaSnake", FishingRarity.Common, FishingSuffix.None, "Pyramid");
+            AddModdedFishingSource(sots, "PhantomFish", FishingRarity.Common, FishingSuffix.None, "Pyramid");
+            AddModdedFishingSource(sots, "Curgeon", FishingRarity.Common, FishingSuffix.None, "Pyramid");
+            AddModdedFishingSource(sots, "ZephyrousZeppelin", FishingRarity.Rare, FishingSuffix.None, "Pyramid");
+            AddModdedFishingSource(sots, "PyramidCrate", FishingRarity.Rare, FishingSuffix.None, "Pyramid");
+
+            // Special Condition Crates
+            AddModdedFishingSource(sots, "PlanetariumCrate", FishingRarity.Rare, FishingSuffix.None, "PlanetariumFishing");
+            AddModdedFishingSource(sots, "OtherworldCrate", FishingRarity.Rare, FishingSuffix.Hardmode, "PlanetariumFishing");
+        }
+
 
         public static void InitializeCustomizedSources() {
             CustomizedSources = new Dictionary<int, List<SourceInfo>>();
@@ -911,17 +1046,68 @@ namespace MoreObtainingTooltips {
             AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Events.Christmas")), ItemID.GoodieBag, ItemID.BloodyMachete, ItemID.BladedGlove);
 
             // --- Pre-Hardmode Underworld Yoyo Drop (Post-Skeletron) ---
-            AddCustomizedSourceToItems("CascadeDrop",
-                ItemID.Cascade
-            );
+            AddCustomizedSourceToItems("CascadeDrop", ItemID.Cascade);
 
             // --- Hardmode Jungle Yoyo Drop (Post-Mech Boss) ---
-            AddCustomizedSourceToItems("YeletsDrop",
-                ItemID.Yelets
-            );
+            AddCustomizedSourceToItems("YeletsDrop", ItemID.Yelets);
+
+
+
+            const string calamity = "CalamityMod";
+
+            AddCustomizedSourceToModItems("AnglerQuest", calamity, "GrandMarquisBait");
+
+            var exhumeRelationships = new Dictionary<string, string>(){
+                { "TheCommunity", "ShatteredCommunity" },
+                { "EntropysVigil", "CindersOfLament" },
+                { "StaffoftheMechworm", "Metastasis" },
+                { "GhastlyVisage", "GruesomeEminence" },
+                { "BurningSea", "Rancor" }
+            };
+
+            foreach (var pair in exhumeRelationships) {
+                string baseItemName = pair.Key;
+                string upgradedItemName = pair.Value;
+                if (MoreObtainingTooltips.TryGetModItemId(calamity, baseItemName, out int baseItemId)) {
+                    string sourceText = string.Format(Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.ExhumedFrom"), Lang.GetItemNameValue(baseItemId));
+                    AddCustomizedSourceToModItemsString(sourceText, calamity, upgradedItemName);
+                }
+            }
         }
 
+        public static void AddCustomizedSourceToModItems(string key, string modName, params string[] itemNames) {
+            var source = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");
 
+            foreach (string itemName in itemNames) {
+                int itemID = MoreObtainingTooltips.GetModItemId(modName, itemName);
+
+                if (itemID > ItemID.None) {
+                    if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
+                        sources = new List<SourceInfo>();
+                        CustomizedSources[itemID] = sources;
+                    }
+                    if (!sources.Contains(source)) {
+                        sources.Add(source);
+                    }
+                }
+            }
+        }
+
+        public static void AddCustomizedSourceToModItemsString(string source, string modName, params string[] itemNames) {
+            foreach (string itemName in itemNames) {
+                int itemID = MoreObtainingTooltips.GetModItemId(modName, itemName);
+
+                if (itemID > ItemID.None) {
+                    if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
+                        sources = new List<SourceInfo>();
+                        CustomizedSources[itemID] = sources;
+                    }
+                    if (!sources.Contains(source)) {
+                        sources.Add(source);
+                    }
+                }
+            }
+        }
         public static void AddCustomizedSourceToItems(string key, params int[] itemIDs) {
             foreach (int itemID in itemIDs) {
                 var source = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");

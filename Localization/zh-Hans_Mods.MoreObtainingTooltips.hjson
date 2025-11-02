@@ -25,7 +25,7 @@ Tooltips: {
 	ObtainedAfterKilling: 杀死 {0} 个 {1} 后获得
 	CatchedFrom: 从 {0} 处捕捉
 	# {0} = Rarity, {1} = Environment
-	FishingCatchDetails: 在 {1} 的 {0} 渔获
+	FishingCatchDetails: 在 {1} 的{0}渔获
 	# Hint text
 	PressShiftHint: <按住 Shift 查看获取方式>
 	More: ... (还有{0}个)
@@ -52,22 +52,32 @@ Tooltips: {
 	BreakingShadowOrb: 打破暗影珠获得
 	BreakingCrimsonHeart: 打破猩红心脏获得
 	SlimeDrops: 由部分史莱姆携带
-	AbigailsFlower: "在墓石旁边的草地上生成"
-    MechCart: "使用[i:5289]获得"
-    TorchGodsFavor: "在火把神事件中幸存后获得"
-    GardenGnome: "由暴露在阳光下的侏儒转化而来"
-    CookedMarshmallow: "在篝火上使用棉花糖获得"
-    MagicalPumpkinSeed: "打破南瓜获得"
+	AbigailsFlower: 在墓石旁边的草地上生成
+	MechCart: 使用[i:5289]获得
+	TorchGodsFavor: 在火把神事件中幸存后获得
+	GardenGnome: 由暴露在阳光下的侏儒转化而来
+	CookedMarshmallow: 在篝火上使用棉花糖获得
+	MagicalPumpkinSeed: 打破南瓜获得
 	PlayerDeath: 玩家死亡掉落
+	StartingItem: 角色初始物品
+	JourneyStartingItem: 旅行角色初始物品
 	DroppedInBiomeHardmode: 在困难模式中由{0}的任何敌人掉落
 	DroppedInBiome: 由{0}的任何敌人掉落
 	DroppedDuringEvent: 在{0}期间由任何敌人掉落
 	CascadeDrop: 击败骷髅王后，在地狱由任何敌人掉落
 	YeletsDrop: 击败任一机械 Boss 后，在丛林由任何敌人掉落
 
-	Fishing: {
-		HardmodeSuffix: " (困难模式)"
+	ExhumedFrom: 由{0}死灵炼注获得
 
+	Fishing: {
+		Suffix: {
+            Hardmode: " (困难模式)"
+            PostWoS: " (击败暗影墙后)"
+            PostSupreme: " (击败对应至尊Boss后)"
+            PostDesertScourge: " (击败荒漠灾虫后)"
+            PostLeviathan: " (击败利维坦和阿娜希타后)"
+            PostProvidence: " (击败亵渎天神后)"
+        }
 		Rarities: {
 			Plentiful: 丰富
 			Common: 常见
@@ -81,28 +91,14 @@ Tooltips: {
 
 		Environments: {
 			Any: 任何生物群落
-			AnyLowPower: 任何生物群落
-			Underground: 地下
-			Cavern: 洞穴
-			Underworld: 地狱
-			Surface: 地表
 			Forest: 森林
-			Jungle: 丛林
-			Sky: 天空
-			Snow: 雪原
-			Corruption: 腐化之地
-			Crimson: 猩红之地
-			Hallow: 神圣之地
-			Desert: 沙漠
-			Oasis: 绿洲
 			Honey: 蜂蜜
 			Lava: 熔岩
-			Ocean: 海洋
-			Dungeon: 地牢
-			GlowingMushroom: 发光蘑菇生物群落
 			LargeLakes: 大湖
-			OverlappingIceEvilHallow: 重叠的冰雪、邪恶/神圣生物群落
-			BloodMoon: 血月期间
+			SunkenSea: "沉沦海"
+            AstralInfection: "星辉瘟疫"
+            SulphurousSea: "硫磺海"
+            BrimstoneCrags: "硫火之崖"
 		}
 	}
 }

@@ -59,14 +59,25 @@ Tooltips: {
 	CookedMarshmallow: Obtained by using a Marshmallow on a Campfire
 	MagicalPumpkinSeed: Obtained by breaking pumpkin
 	PlayerDeath: Drop when a player dies
+	StartingItem: Character starting item
+	JourneyStartingItem: Journey character starting item
 	DroppedInBiomeHardmode: Dropped by any enemy in {0} during Hardmode
 	DroppedInBiome: Dropped by any enemy in {0}
 	DroppedDuringEvent: Dropped by any enemy during {0}
 	CascadeDrop: Dropped by any enemy in the Underworld after Skeletron has been defeated
 	YeletsDrop: Dropped by any enemy in the Jungle after any mechanical boss has been defeated
 
+	ExhumedFrom: "Exhumed from {0}"
+
 	Fishing: {
-		HardmodeSuffix: " (Hardmode)"
+		Suffix: {
+            Hardmode: " (Hardmode)"
+            PostWoS: " (Post-Wall of Shadow)"
+            PostSupreme: " (Post-Supreme Boss)"
+            PostDesertScourge: " (After Desert Scourge)"
+            PostLeviathan: " (After Leviathan and Anahita)"
+            PostProvidence: " (After Providence)"
+        }
 
 		Rarities: {
 			Plentiful: Plentiful
@@ -82,27 +93,16 @@ Tooltips: {
 		Environments: {
 			Any: any biome
 			AnyLowPower: any biome
-			Underground: Underground
-			Cavern: Cavern
-			Underworld: Underworld
-			Surface: Surface
 			Forest: Forest
-			Jungle: Jungle
-			Sky: Sky
-			Snow: Snow biome
-			Corruption: Corruption
-			Crimson: Crimson
-			Hallow: Hallow
-			Desert: Desert
-			Oasis: Oasis
 			Honey: Honey
 			Lava: Lava
-			Ocean: Ocean
-			Dungeon: the Dungeon
-			GlowingMushroom: Glowing Mushroom biome
 			LargeLakes: large lakes
-			OverlappingIceEvilHallow: overlapping Ice & evil/Hallow biomes
-			BloodMoon: a Blood Moon
+			SunkenSea: "Sunken Sea"
+            AstralInfection: "Astral Infection"
+            SulphurousSea: "Sulphurous Sea"
+            BrimstoneCrags: "Brimstone Crags"
+			Pyramid: "Pyramid"
+            PlanetariumFishing: "(with specific pole or bait)"
 		}
 	}
 }

@@ -224,21 +224,18 @@ namespace MoreObtainingTooltips {
             }
 
             // Fishing
-            if (Config.Fishing.Enabled && FishingSources.TryGetValue(item.type, out FishingInfo fishingInfo)) {
+            if (Config.Fishing.Enabled && FishingSources.TryGetValue(item.type, out var fishingSources)) {
                 if (Config.Fishing.MaxCount == 0) {
                     obtainingMethods.Add(GetText("FishingCatch"));
                 } else {
-                    string rarityText = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Rarities.{fishingInfo.RarityKey}");
-
-                    List<string> localizedEnvs = fishingInfo.EnvironmentKeys
-                        .Select(key => Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Environments.{key}"))
-                        .ToList();
-                    string environmentText = string.Join(", ", localizedEnvs);
-
-                    if (fishingInfo.IsHardmode) {
-                        environmentText += GetText("Fishing.HardmodeSuffix");
+                    var fishingInfo = fishingSources[0];
+                    var rarityId = (FishingRarity)fishingInfo.id;
+                    string environmentText = fishingInfo.str;
+                    string rarityKey = Enum.GetName(typeof(FishingRarity), rarityId);
+                    string rarityText = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Rarities.{rarityKey}");
+                    if (fishingInfo.num > 0) {
+                        environmentText += Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Suffix.{Enum.GetName(typeof(FishingSuffix), fishingInfo.num)}");
                     }
-
                     obtainingMethods.Add(string.Format(GetText("FishingCatchDetails"), rarityText, environmentText));
                 }
             }
