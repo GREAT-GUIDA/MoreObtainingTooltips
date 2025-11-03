@@ -66,6 +66,7 @@ Tooltips: {
 	DroppedDuringEvent: Dropped by any enemy during {0}
 	CascadeDrop: Dropped by any enemy in the Underworld after Skeletron has been defeated
 	YeletsDrop: Dropped by any enemy in the Jungle after any mechanical boss has been defeated
+	KrakenDrop: Dropped by any enemy in the Dungeon after Plantera has been defeated
 
 	ExhumedFrom: "Exhumed from {0}"
 

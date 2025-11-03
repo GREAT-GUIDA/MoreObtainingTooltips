@@ -1,18 +1,18 @@
 Tooltips: {
-	// Breakable: World generated tile
+	Breakable: Плитка, сгенерированная миром
 	Craftable: Создаваемое
 	Shimmered: Трансмутабельное
 	Decrafted: Разбираемое
 	Grabbed: Находимое в мешочках
 	FoundInChests: Находимое в сундуках
-	FromExtractinator: Из обоготителя
+	FromExtractinator: Из обогатителя
 	FromChlorophyteExtractinator: Из хлорофитового обогатителя
 	Purchasable: Приобретаемое
 	Droppable: Выпадающее из существ
 	Catchable: Пойманное существо
-	// ObtainableAsBanner: NPC Banner
+	ObtainableAsBanner: Знамя существа
 	FishingCatch: Вылавливаемое
-	// ObtainedByBreaking: Obtained by breaking world generated {0}
+	ObtainedByBreaking: Получено при разрушении сгенерированного миром {0}
 	CraftedWith: Создано из {0}
 	ShimmeredFrom: Трансмутировано из {0}
 	DecraftedFrom: Разобрано из {0}
@@ -22,7 +22,7 @@ Tooltips: {
 	ChlorophyteExtractedFrom: Обогащено из {0} в [i:5269]
 	SoldBy: Продаётся у {0}
 	DroppedBy: Выпадает из {0}
-	// ObtainedAfterKilling: Obtained after killing {0} {1}
+	ObtainedAfterKilling: Получено после убийства {0} {1}
 	CatchedFrom: Поймано {0}
 	# {0} = Rarity, {1} = Environment
 	FishingCatchDetails: "{0}, поймано в {1}"
@@ -30,35 +30,38 @@ Tooltips: {
 	PressShiftHint: <Нажмите Shift для расширенных подсказок>
 	More: … ({0} и более)
 	AnyNPC: "любого НИПа "
-	// WhenPlayerHave: When player have {0}
-	// UnknownChest: Unknown Chest
-	// MusicBoxFormat: Obtained by recording {0} using [i:576]
-	// Quests & NPCs
+	WhenPlayerHave: Когда у игрока есть {0}
+	UnknownChest: Неизвестный сундук
+	MusicBoxFormat: Можно получить, записав {0} с помощью [i:576]
+	
+	# Quests & NPCs
 	AnglerQuest: Награда заданий рыбака
 	DyeTraderQuest: Награда заданий торговца красителями
 	PartyGirlGiven: Выдаётся Тусовщицей
-	// Shaking Trees
+	
+	# Shaking Trees
 	ShakingForestTree: Выпадает при тряске лесных деревьев
 	ShakingMahoganyTree: Выпадает при тряске красных деревьев
 	ShakingEbonwoodTree: Выпадает при тряске чёрных деревьев
 	ShakingShadewoodTree: Выпадает при тряске мрачных деревьев
 	ShakingPearlwoodTree: Выпадает при тряске жемчужных деревьев
 	ShakingPalmTree: Выпадает при тряске пальм
-	// ShakingBorealTree: Drop from shaking Boreal trees
+	ShakingBorealTree: Выпадает при тряске заснеженных деревьев
 	ShakingAshTree: Выпадает при тряске ясеней
 	ShakingGlowingMushroom: Выпадает при тряске больших светящихся грибов
-	// Breaking Objects
-	BreakingPots: Drop from breaking Pots Выпадат при разбиении горшков
+	
+	# Breaking Objects
+	BreakingPots: Выпадат при разбиении горшков
 	BreakingShadowOrb: Выпадает при разрушении Теневых сфер
 	BreakingCrimsonHeart: Выпадает при разрушении Багряных сердец
 	SlimeDrops: Переносится слизнями
-	// AbigailsFlower: Spawns on grass near a Tombstone
-	// MechCart: Obtained by using [i:5289]
-	// TorchGodsFavor: Obtained by surviving the Torch God event
-	// GardenGnome: Created when a Gnome is exposed to sunlight
-	// CookedMarshmallow: Obtained by using a Marshmallow on a Campfire
-	// MagicalPumpkinSeed: Obtained by breaking pumpkin
-	// PlayerDeath: Drop when a player dies
+	AbigailsFlower: Появляется на траве рядом с могилой
+	MechCart: Получено при использовании [i:5289]
+	TorchGodsFavor: Получено после прохождения испытания Бога факелов
+	GardenGnome: Создаётся, когда Гном выходит на солнце
+	CookedMarshmallow: Можно получить при жарке Маршмеллоу на костре
+	MagicalPumpkinSeed: Можно получить при разбиении тыквы
+	PlayerDeath: Выпадает при смерти игрока
 	DroppedInBiomeHardmode: Выпадает из любого существа в {0} в хардмоде
 	DroppedInBiome: Выпадает из любого существа в {0}
 	DroppedDuringEvent: Выпадает из любого существа при событии {0}
@@ -82,10 +85,27 @@ Tooltips: {
 		Environments: {
 			Any: любом биоме
 			AnyLowPower: любом биоме
+			Underground: "{$Bestiary_Biomes.Underground}"
+			Cavern: "{$Bestiary_Biomes.Caverns}"
+			Underworld: "{$Bestiary_Biomes.TheUnderworld}"
+			Surface: "{$Bestiary_Biomes.Surface}"
 			Forest: Лес
+			Jungle: "{$Bestiary_Biomes.Jungle}"
+			Sky: "{$Bestiary_Biomes.Sky}"
+			Snow: "{$Bestiary_Biomes.Snow}"
+			Corruption: "{$Bestiary_Biomes.TheCorruption}"
+			Crimson: "{$Bestiary_Biomes.Crimson}"
+			Hallow: "{$Bestiary_Biomes.Hallow}"
+			Desert: "{$Bestiary_Biomes.Desert}"
+			Oasis: "{$Bestiary_Biomes.Oasis}"
 			Honey: меду
 			Lava: лаве
+			Ocean: "{$Bestiary_Biomes.Ocean}"
+			Dungeon: "{$Bestiary_Biomes.TheDungeon}"
+			GlowingMushroom: Грибницах
 			LargeLakes: больших озёрах
+			OverlappingIceEvilHallow: Смешанных Ледяном и мировом зле/Освящении биомах
+			BloodMoon: "{$Bestiary_Events.BloodMoon}"
 		}
 	}
 }
@@ -183,31 +203,43 @@ Configs: {
 		}
 
 		ShowShopCondition: {
-			// Label: Show Shop Condition
-			// Tooltip: ""
+			Label: Отображать условия магазина
+			Tooltip: ""
 		}
 
 		MaxTooltipLength: {
-			// Label: Automatic Line Length
-			// Tooltip: ""
+			Label: Автоматическая длина строки
+			Tooltip: ""
 		}
 
 		BreakableTiles: {
-			// Label: Breakable Tiles
-			// Tooltip: ""
+			Label: Разрушаемые плитки
+			Tooltip: ""
 		}
 
 		Banners: {
-			// Label: Banners
-			// Tooltip: ""
+			Label: Знамёна
+			Tooltip: ""
 		}
 	}
 
 	TooltipShowMode: {
 		Tooltip: ""
-		Never.Label: Никогда
-		OnShift.Label: На Shift
-		Always.Label: Всегда
+
+		Never: {
+			Label: Никогда
+			// Tooltip: ""
+		}
+
+		OnShift: {
+			Label: На Shift
+			// Tooltip: ""
+		}
+
+		Always: {
+			Label: Всегда
+			// Tooltip: ""
+		}
 	}
 
 	TooltipSettings: {
@@ -226,8 +258,20 @@ Configs: {
 
 	ItemShowMode: {
 		Tooltip: ""
-		Icon.Label: Значок
-		Name.Label: Имя
-		IconAndName.Label: Значок и имя
+
+		Icon: {
+			Label: Значок
+			// Tooltip: ""
+		}
+
+		Name: {
+			Label: Имя
+			// Tooltip: ""
+		}
+
+		IconAndName: {
+			Label: Значок и имя
+			// Tooltip: ""
+		}
 	}
 }

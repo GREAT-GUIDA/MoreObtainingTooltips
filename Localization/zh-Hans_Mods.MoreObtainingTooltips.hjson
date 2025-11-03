@@ -66,6 +66,7 @@ Tooltips: {
 	DroppedDuringEvent: 在{0}期间由任何敌人掉落
 	CascadeDrop: 击败骷髅王后，在地狱由任何敌人掉落
 	YeletsDrop: 击败任一机械 Boss 后，在丛林由任何敌人掉落
+	KrakenDrop: 击败世纪之花，在地牢由任何敌人掉落
 
 	ExhumedFrom: 由{0}死灵炼注获得
 

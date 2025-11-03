@@ -106,56 +106,43 @@ namespace MoreObtainingTooltips {
                 }
             }
         }
-        // 保存世界数据
-        public override void SaveWorldData(TagCompound tag) {
-            if (ChestSources != null && ChestSources.Count > 0) {
+        private void SaveSourceDictionary(TagCompound tag, string tagName, Dictionary<int, List<SourceInfo>> dictionary) {
+            if (dictionary != null && dictionary.Count > 0) {
                 var list = new List<TagCompound>();
-                foreach (var pair in ChestSources) {
+                foreach (var pair in dictionary) {
                     list.Add(new TagCompound {
                         ["key"] = pair.Key,
+                        // 只保存id，因为其他信息是临时的
                         ["sources"] = pair.Value.Select(source => source.id).ToList()
                     });
                 }
-                tag["ChestSources"] = list;
-            }
-
-            // 修正: < 0 改为 > 0
-            if (BreakTileSources != null && BreakTileSources.Count > 0) {
-                var breakTileList = new List<TagCompound>();
-                foreach (var pair in BreakTileSources) {
-                    breakTileList.Add(new TagCompound {
-                        ["key"] = pair.Key,
-                        // 同样在这里提取 id
-                        ["sources"] = pair.Value.Select(source => source.id).ToList()
-                    });
-                }
-                tag["BreakTileSources"] = breakTileList;
+                tag[tagName] = list;
             }
         }
 
-        // 加载世界数据
-        public override void LoadWorldData(TagCompound tag) {
-            /*ChestSources.Clear();
-            _loadedChestSourcesFromTag = false;
-            if (tag.TryGet("ChestSources", out List<TagCompound> list)) {
+        private Dictionary<int, List<SourceInfo>> LoadSourceDictionary(TagCompound tag, string tagName) {
+            var dictionary = new Dictionary<int, List<SourceInfo>>();
+            if (tag.TryGet(tagName, out List<TagCompound> list)) {
                 foreach (var entryTag in list) {
                     if (entryTag.TryGet("key", out int key) && entryTag.TryGet("sources", out List<int> sourceIds)) {
-                        ChestSources[key] = sourceIds.Select(id => new SourceInfo(id)).ToList();
+                        dictionary[key] = sourceIds.Select(id => new SourceInfo(id)).ToList();
                     }
                 }
-                _loadedChestSourcesFromTag = true;
-            }*/
-
-            BreakTileSources.Clear();
-            _loadedBreakTileSourcesFromTag = false;
-            if (tag.TryGet("BreakTileSources", out List<TagCompound> breakTileList)) {
-                foreach (var entryTag in breakTileList) {
-                    if (entryTag.TryGet("key", out int key) && entryTag.TryGet("sources", out List<int> sourceIds)) {
-                        BreakTileSources[key] = sourceIds.Select(id => new SourceInfo(id)).ToList();
-                    }
-                }
-                _loadedBreakTileSourcesFromTag = true;
             }
+            return dictionary;
+        }
+
+        public override void SaveWorldData(TagCompound tag) {
+            SaveSourceDictionary(tag, "ChestSources", ChestSources);
+            SaveSourceDictionary(tag, "BreakTileSources", BreakTileSources);
+        }
+
+        public override void LoadWorldData(TagCompound tag) {
+            ChestSources = LoadSourceDictionary(tag, "ChestSources");
+            _loadedChestSourcesFromTag = ChestSources.Count > 0;
+
+            BreakTileSources = LoadSourceDictionary(tag, "BreakTileSources");
+            _loadedBreakTileSourcesFromTag = BreakTileSources.Count > 0;
         }
 
         public override void OnWorldUnload() {
@@ -372,7 +359,7 @@ namespace MoreObtainingTooltips {
                 }
             }
 
-
+            
             // --- Populate Grab Bag Sources ---
             for (int type = 1; type < ItemLoader.ItemCount; type++) {
                 Item grabBagItem = ContentSamples.ItemsByType[type];
@@ -399,6 +386,13 @@ namespace MoreObtainingTooltips {
                     }
                 }
             }
+            void AddItemSetsToBagSource(int bagId, IEnumerable<int[]> itemSets) {
+                foreach (var set in itemSets) {
+                    foreach (int itemId in set) {
+                        AddSource(GrabBagSources, itemId, bagId);
+                    }
+                }
+            }
             int[][] goodieBagDeveloperSets = {
                 new[] { 666, 667, 668, 665, 3287 }, new[] { 1554, 1555, 1556, 1586 },
                 new[] { 1554, 1587, 1588, 1586 }, new[] { 1557, 1558, 1559, 1585 },
@@ -409,27 +403,15 @@ namespace MoreObtainingTooltips {
                 new[] { 3368, 3921, 3922, 3923, 3924 }, new[] { 3925, 3926, 3927, 3928, 3929 },
                 new[] { 4732, 4733, 4734, 4730 }, new[] { 4747, 4748, 4749, 4746 },
                 new[] { 4751, 4752, 4753, 4750 }, new[] { 4755, 4756, 4757, 4754 } 
-            }
-            ;
+            };
+            var devSetsAsInts = ModLoaderMod.DeveloperSets.Select(set => set.Select(item => item.Type).ToArray());
+            var patronSetsAsInts = ModLoaderMod.PatronSets.Select(set => set.Select(item => item.Type).ToArray());
             for (int bagId = ItemID.None + 1; bagId < ItemLoader.ItemCount; bagId++) {
                 if (ItemID.Sets.BossBag[bagId] && !ItemID.Sets.PreHardmodeLikeBossBag[bagId]) {
-                    for (int i = 0; i < ModLoaderMod.DeveloperSets.Length; i++) {
-                        for (int j = 0; j < ModLoaderMod.DeveloperSets[i].Length; j++) {
-                            int devItemId = ModLoaderMod.DeveloperSets[i][j].Type;
-                            AddSource(GrabBagSources, devItemId, bagId);
-                        }
-                    }
-                    for (int i = 0; i < ModLoaderMod.PatronSets.Length; i++) {
-                        for (int j = 0; j < ModLoaderMod.PatronSets[i].Length; j++) {
-                            int patronItemId = ModLoaderMod.PatronSets[i][j].Type;
-                            AddSource(GrabBagSources, patronItemId, bagId);
-                        }
-                    }
-                    foreach (int[] set in goodieBagDeveloperSets) {
-                        foreach (int devItemId in set) {
-                            AddSource(GrabBagSources, devItemId, bagId);
-                        }
-                    }
+                    AddItemSetsToBagSource(bagId, goodieBagDeveloperSets);
+                    
+                    AddItemSetsToBagSource(bagId, devSetsAsInts);
+                    AddItemSetsToBagSource(bagId, patronSetsAsInts);
                 }
             }
 
@@ -576,8 +558,8 @@ namespace MoreObtainingTooltips {
             }
         }
         public enum FishingRarity {
-            Junk = -1, Quest = 0, Plentiful = 1, Common = 2, Uncommon = 3,
-            Rare = 4, VeryRare = 5, ExtremelyRare = 6
+            None, Junk, Quest, Plentiful, Common, Uncommon,
+            Rare, VeryRare, ExtremelyRare
         }
         public enum FishingSuffix {
             None, Hardmode, 
@@ -829,7 +811,7 @@ namespace MoreObtainingTooltips {
 
 
             // --- Secrets of the Shadows (SOTS) Mod Integration ---
-            const string sots = "SOTS";
+            string sots = "SOTS";
 
             // Standard Catches
             AddModdedFishingSource(sots, "TinyPlanetFish", FishingRarity.Uncommon, FishingSuffix.None, "Sky");
@@ -1033,7 +1015,6 @@ namespace MoreObtainingTooltips {
             AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Ocean")),ItemID.PirateMap);
             AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheUnderworld")), ItemID.LivingFireBlock, ItemID.HelFire);
             AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheSnow")),ItemID.Amarok);
-            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheDungeon")),ItemID.Kraken);
 
             AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Jungle")), ItemID.JungleKey);
             AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.TheCorruption")), ItemID.CorruptionKey);
@@ -1042,8 +1023,8 @@ namespace MoreObtainingTooltips {
             AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Snow")), ItemID.FrozenKey);
             AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Biomes.Desert")), ItemID.DungeonDesertKey);
 
-            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Events.Halloween")), ItemID.Present);
-            AddCustomizedSourceToItemsString(string.Format(templateBiomeHardmode, Language.GetTextValue("Bestiary_Events.Christmas")), ItemID.GoodieBag, ItemID.BloodyMachete, ItemID.BladedGlove);
+            AddCustomizedSourceToItemsString(string.Format(templateBiome, Language.GetTextValue("Bestiary_Events.Halloween")), ItemID.Present);
+            AddCustomizedSourceToItemsString(string.Format(templateBiome, Language.GetTextValue("Bestiary_Events.Christmas")), ItemID.GoodieBag, ItemID.BloodyMachete, ItemID.BladedGlove);
 
             // --- Pre-Hardmode Underworld Yoyo Drop (Post-Skeletron) ---
             AddCustomizedSourceToItems("CascadeDrop", ItemID.Cascade);
@@ -1051,7 +1032,8 @@ namespace MoreObtainingTooltips {
             // --- Hardmode Jungle Yoyo Drop (Post-Mech Boss) ---
             AddCustomizedSourceToItems("YeletsDrop", ItemID.Yelets);
 
-
+            // --- Hardmode Dungeon Yoyo Drop (Post-Plantera) ---
+            AddCustomizedSourceToItems("KrakenDrop", ItemID.Kraken);
 
             const string calamity = "CalamityMod";
 
@@ -1075,68 +1057,42 @@ namespace MoreObtainingTooltips {
             }
         }
 
-        public static void AddCustomizedSourceToModItems(string key, string modName, params string[] itemNames) {
-            var source = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");
-
-            foreach (string itemName in itemNames) {
-                int itemID = MoreObtainingTooltips.GetModItemId(modName, itemName);
-
-                if (itemID > ItemID.None) {
-                    if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
-                        sources = new List<SourceInfo>();
-                        CustomizedSources[itemID] = sources;
-                    }
-                    if (!sources.Contains(source)) {
-                        sources.Add(source);
-                    }
-                }
-            }
-        }
-
-        public static void AddCustomizedSourceToModItemsString(string source, string modName, params string[] itemNames) {
-            foreach (string itemName in itemNames) {
-                int itemID = MoreObtainingTooltips.GetModItemId(modName, itemName);
-
-                if (itemID > ItemID.None) {
-                    if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
-                        sources = new List<SourceInfo>();
-                        CustomizedSources[itemID] = sources;
-                    }
-                    if (!sources.Contains(source)) {
-                        sources.Add(source);
-                    }
-                }
-            }
-        }
         public static void AddCustomizedSourceToItems(string key, params int[] itemIDs) {
+            string sourceText = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");
             foreach (int itemID in itemIDs) {
-                var source = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");
-
-                if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
-                    sources = new List<SourceInfo>();
-                    CustomizedSources[itemID] = sources;
-                }
-
-                if (!sources.Contains(source)) {
-                    sources.Add(source);
-                }
+                AddCustomizedSource(itemID, sourceText);
             }
         }
-
         public static void AddCustomizedSourceToItemsString(string source, params int[] itemIDs) {
             foreach (int itemID in itemIDs) {
-
-                if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
-                    sources = new List<SourceInfo>();
-                    CustomizedSources[itemID] = sources;
-                }
-
-                if (!sources.Contains(source)) {
-                    sources.Add(source);
+                AddCustomizedSource(itemID, source);
+            }
+        }
+        public static void AddCustomizedSourceToModItems(string key, string modName, params string[] itemNames) {
+            string sourceText = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.{key}");
+            foreach (string itemName in itemNames) {
+                if (MoreObtainingTooltips.TryGetModItemId(modName, itemName, out int itemID)) {
+                    AddCustomizedSource(itemID, sourceText);
                 }
             }
         }
-
+        public static void AddCustomizedSourceToModItemsString(string source, string modName, params string[] itemNames) {
+            foreach (string itemName in itemNames) {
+                if (MoreObtainingTooltips.TryGetModItemId(modName, itemName, out int itemID)) {
+                    AddCustomizedSource(itemID, source);
+                }
+            }
+        }
+        private static void AddCustomizedSource(int itemID, string sourceText) {
+            if (itemID <= ItemID.None) return;
+            if (!CustomizedSources.TryGetValue(itemID, out List<SourceInfo> sources)) {
+                sources = new List<SourceInfo>();
+                CustomizedSources[itemID] = sources;
+            }
+            if (!sources.Contains(sourceText)) {
+                sources.Add(sourceText);
+            }
+        }
         public static void RegisterCustomSource(string fullLocalizationKey, IEnumerable<int> itemIDs) {
             if (!RegisteredCustomSources.ContainsKey(fullLocalizationKey)) {
                 RegisteredCustomSources[fullLocalizationKey] = new List<int>();
