@@ -216,7 +216,14 @@ namespace MoreObtainingTooltips {
             BreakTileSources.Clear();
             _loadedBreakTileSourcesFromTag = false;
         }
+        public override void PostUpdateTime() {
+            //ReloadInfo();
+        }
         public override void PostWorldLoad() {
+            ReloadInfo();
+        }
+
+        public static void ReloadInfo() {
             // --- Reset Dictionaries ---
             ShimmerSources.Clear();
             DecraftSources.Clear();
@@ -492,6 +499,9 @@ namespace MoreObtainingTooltips {
 
                 foreach (Item ingredient in recipe.requiredItem) {
                     if (!ingredient.IsAir) {
+                        if(DecraftSources.TryGetValue(resultType, out var decraftSources)) {
+                            if (decraftSources.Contains(new SourceInfo(ingredient.type))) continue;
+                        }
                         AddSource(CraftingSources, resultType, ingredient.type);
                     }
                 }
@@ -539,7 +549,7 @@ namespace MoreObtainingTooltips {
             DataPopulator.InitializeCustomizedSources(CustomizedSources);
         }
 
-        private void AddSource(Dictionary<int, List<SourceInfo>> sourcesDict, int key, SourceInfo sourceValue) {
+        public static void AddSource(Dictionary<int, List<SourceInfo>> sourcesDict, int key, SourceInfo sourceValue) {
             if (!sourcesDict.ContainsKey(key)) {
                 sourcesDict[key] = new List<SourceInfo>();
             }
@@ -549,7 +559,7 @@ namespace MoreObtainingTooltips {
             }
         }
 
-        private void PopulateExtractinatorSources() {
+        public static void PopulateExtractinatorSources() {
         }
         
         public static void RegisterCustomSource(string fullLocalizationKey, IEnumerable<int> itemIDs) {

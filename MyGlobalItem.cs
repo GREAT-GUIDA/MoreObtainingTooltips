@@ -183,14 +183,6 @@ namespace MoreObtainingTooltips {
             if (Config.Crafting.Enabled && CraftingSources.TryGetValue(item.type, out var ingredients))
                 TryAddMethod(Config.Crafting.MaxCount == 0 ? GetText("Craftable") : GenerateItemSourceTooltip(GetText("CraftedWith"), ingredients, Config.Crafting.MaxCount));
 
-            // Shimmering
-            if (Config.Shimmering.Enabled && ShimmerSources.TryGetValue(item.type, out var shimmerSources))
-                TryAddMethod(Config.Shimmering.MaxCount == 0 ? GetText("Shimmered") : GenerateItemSourceTooltip(GetText("ShimmeredFrom"), shimmerSources, Config.Shimmering.MaxCount));
-
-            // Decrafting
-            if (Config.Decrafting.Enabled && DecraftSources.TryGetValue(item.type, out var decraftSources))
-                TryAddMethod(Config.Decrafting.MaxCount == 0 ? GetText("Decrafted") : GenerateItemSourceTooltip(GetText("DecraftedFrom"), decraftSources, Config.Decrafting.MaxCount));
-
             // Grab Bags
             if (Config.GrabBags.Enabled && GrabBagSources.TryGetValue(item.type, out var grabBagSources))
                 TryAddMethod(Config.GrabBags.MaxCount == 0 ? GetText("Grabbed") : GenerateItemSourceTooltip(GetText("GrabbedFrom"), grabBagSources, Config.GrabBags.MaxCount));
@@ -198,14 +190,6 @@ namespace MoreObtainingTooltips {
             // Chests
             if (Config.Chests.Enabled && ChestSources.TryGetValue(item.type, out var chestSources))
                 TryAddMethod(Config.Chests.MaxCount == 0 ? GetText("FoundInChests") : GenerateItemSourceTooltip(GetText("FoundIn"), chestSources, Config.Chests.MaxCount));
-
-            // Extractinator
-            if (Config.Extractinator.Enabled && ExtractinatorSources.TryGetValue(item.type, out var extractSources))
-                TryAddMethod(Config.Extractinator.MaxCount == 0 ? GetText("FromExtractinator") : GenerateItemSourceTooltip(GetText("ExtractedFrom"), extractSources, Config.Extractinator.MaxCount));
-
-            // Chlorophyte Extractinator
-            if (Config.ChlorophyteExtractinator.Enabled && ChlorophyteExtractinatorSources.TryGetValue(item.type, out var chloroExtractSources))
-                TryAddMethod(Config.ChlorophyteExtractinator.MaxCount == 0 ? GetText("FromChlorophyteExtractinator") : GenerateItemSourceTooltip(GetText("ChlorophyteExtractedFrom"), chloroExtractSources, Config.ChlorophyteExtractinator.MaxCount));
 
             // Shops
             if (Config.Shops.Enabled && ShopSources.TryGetValue(item.type, out var shopSources))
@@ -218,15 +202,32 @@ namespace MoreObtainingTooltips {
             // Catching
             if (Config.Catching.Enabled && CatchNPCSources.TryGetValue(item.type, out var catchNpcSources))
                 TryAddMethod(Config.Catching.MaxCount == 0 ? GetText("Catchable") : GenerateNpcSourceTooltip(GetText("CatchedFrom"), catchNpcSources, Config.Catching.MaxCount));
-
+            
             if (Config.Banners.Enabled && NPCBannerSources.TryGetValue(item.type, out var bannerSources)) {
-                if(Config.Banners.MaxCount == 0) TryAddMethod(GetText("ObtainableAsBanner"));
+                if (Config.Banners.MaxCount == 0) TryAddMethod(GetText("ObtainableAsBanner"));
                 else {
                     var str = GenerateNpcSourceTooltip("{0}", bannerSources, Config.Banners.MaxCount);
                     TryAddMethod(string.Format(GetText("ObtainedAfterKilling"), bannerSources[0].num.ToString(), str));
                 }
             }
-            
+
+            // Shimmering
+            if (Config.Shimmering.Enabled && ShimmerSources.TryGetValue(item.type, out var shimmerSources))
+                TryAddMethod(Config.Shimmering.MaxCount == 0 ? GetText("Shimmered") : GenerateItemSourceTooltip(GetText("ShimmeredFrom"), shimmerSources, Config.Shimmering.MaxCount));
+
+            // Decrafting
+            if (Config.Decrafting.Enabled && DecraftSources.TryGetValue(item.type, out var decraftSources))
+                TryAddMethod(Config.Decrafting.MaxCount == 0 ? GetText("Decrafted") : GenerateItemSourceTooltip(GetText("DecraftedFrom"), decraftSources, Config.Decrafting.MaxCount));
+
+            // Extractinator
+            if (Config.Extractinator.Enabled && ExtractinatorSources.TryGetValue(item.type, out var extractSources))
+                TryAddMethod(Config.Extractinator.MaxCount == 0 ? GetText("FromExtractinator") : GenerateItemSourceTooltip(GetText("ExtractedFrom"), extractSources, Config.Extractinator.MaxCount));
+
+            // Chlorophyte Extractinator
+            if (Config.ChlorophyteExtractinator.Enabled && ChlorophyteExtractinatorSources.TryGetValue(item.type, out var chloroExtractSources))
+                TryAddMethod(Config.ChlorophyteExtractinator.MaxCount == 0 ? GetText("FromChlorophyteExtractinator") : GenerateItemSourceTooltip(GetText("ChlorophyteExtractedFrom"), chloroExtractSources, Config.ChlorophyteExtractinator.MaxCount));
+
+
             // Fishing
             if (Config.Fishing.Enabled && FishingSources.TryGetValue(item.type, out var fishingSources)) {
                 if (Config.Fishing.MaxCount == 0) {

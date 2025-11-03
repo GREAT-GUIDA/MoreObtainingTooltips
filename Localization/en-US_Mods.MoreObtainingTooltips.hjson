@@ -149,12 +149,12 @@ Configs: {
 		}
 
 		Shimmering: {
-			Label: Shimmer (Transform)
+			Label: Shimmer Transform
 			Tooltip: ""
 		}
 
 		Decrafting: {
-			Label: Shimmer (Decraft)
+			Label: Decraft
 			Tooltip: ""
 		}
 
@@ -222,6 +222,10 @@ Configs: {
 		Banners: {
 			Label: Banners
 			Tooltip: ""
+		}
+		HideDuplicateItems: {
+			Label: Hide Duplicate Items
+			// Tooltip: ""
 		}
 	}
 

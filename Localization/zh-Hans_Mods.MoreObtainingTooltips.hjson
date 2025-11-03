@@ -145,12 +145,12 @@ Configs: {
 		}
 
 		Shimmering: {
-			Label: 微光 (嬗变)
+			Label: 微光嬗变
 			Tooltip: ""
 		}
 
 		Decrafting: {
-			Label: 微光 (分解)
+			Label: 分解
 			Tooltip: ""
 		}
 
@@ -211,12 +211,17 @@ Configs: {
 		}
 
 		BreakableTiles: {
-			// Label: Breakable Tiles
+			Label: 自然生成物块
 			// Tooltip: ""
 		}
 
 		Banners: {
-			// Label: Banners
+			Label: 旗帜
+			// Tooltip: ""
+		}
+
+		HideDuplicateItems: {
+			Label: 隐藏重复物品
 			// Tooltip: ""
 		}
 	}

@@ -84,9 +84,7 @@ namespace MoreObtainingTooltips
 
             // 任意树 (Any trees)
             AddCustomizedSourceToItems("ShakingAnyTree",
-                ItemID.Acorn, ItemID.Wood, ItemID.Apple, ItemID.Apricot, ItemID.Grapefruit,
-                ItemID.Lemon, ItemID.Peach, ItemID.LivingWoodWand,
-                ItemID.LeafWand, ItemID.EucaluptusSap
+                ItemID.RottenEgg
             );
 
             // 森林树 (Forest trees)

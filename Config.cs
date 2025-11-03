@@ -55,6 +55,9 @@ namespace MoreObtainingTooltips
         [DefaultValue(true)]
         public bool ShowShopCondition { get; set; } = true;
 
+        [DefaultValue(true)]
+        public bool HideDuplicateItems { get; set; } = true;
+
         [DefaultValue(100)]
         [Range(80, 500)]
         public int MaxTooltipLength { get; set; } = 100;
@@ -73,5 +76,8 @@ namespace MoreObtainingTooltips
         public TooltipSettings Extractinator { get; set; } = new();
         public TooltipSettings ChlorophyteExtractinator { get; set; } = new();
         public TooltipSettings Customized { get; set; } = new();
+        public override void OnChanged() {
+            //ObtainingSystem.ShouldReloadInfo = true;
+        }
     }
 }
