@@ -28,6 +28,7 @@ Tooltips: {
 	FishingCatchDetails: "{0} fishing catch in {1}"
 	# Hint text
 	PressShiftHint: <Press Shift for obtaining info>
+	PressShiftHintNum: <Press Shift for {0} obtaining tooltips>
 	More: ... ({0} more)
 	AnyNPC: Any NPC
 	WhenPlayerHave: When player have {0}
@@ -38,6 +39,7 @@ Tooltips: {
 	DyeTraderQuest: Reward of Dye Trader quests
 	PartyGirlGiven: Given by Party girl
 	// Shaking Trees
+	ShakingAnyTree: Drop from shaking any trees
 	ShakingForestTree: Drop from shaking Forest trees
 	ShakingMahoganyTree: Drop from shaking Mahogany trees
 	ShakingEbonwoodTree: Drop from shaking Ebonwood trees
@@ -98,6 +100,8 @@ Tooltips: {
 			Honey: Honey
 			Lava: Lava
 			LargeLakes: large lakes
+			GlowingMushroom: Glowing Mushroom
+
 			SunkenSea: "Sunken Sea"
             AstralInfection: "Astral Infection"
             SulphurousSea: "Sulphurous Sea"

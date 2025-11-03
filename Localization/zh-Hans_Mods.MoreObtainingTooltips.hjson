@@ -28,6 +28,7 @@ Tooltips: {
 	FishingCatchDetails: 在 {1} 的{0}渔获
 	# Hint text
 	PressShiftHint: <按住 Shift 查看获取方式>
+	PressShiftHintNum: <按住 Shift 查看剩余{0}行获取方式>
 	More: ... (还有{0}个)
 	AnyNPC: 任意NPC
 	WhenPlayerHave: 当玩家持有 {0}
@@ -38,6 +39,7 @@ Tooltips: {
 	DyeTraderQuest: 染料商任务奖励
 	PartyGirlGiven: 由派对女孩给予
 	// Shaking Trees
+	ShakingAnyTree: 摇晃任意树获得
 	ShakingForestTree: 摇晃森林树获得
 	ShakingMahoganyTree: 摇晃红木树获得
 	ShakingEbonwoodTree: 摇晃乌木树获得
@@ -96,6 +98,8 @@ Tooltips: {
 			Honey: 蜂蜜
 			Lava: 熔岩
 			LargeLakes: 大湖
+			GlowingMushroom: 发光蘑菇
+
 			SunkenSea: "沉沦海"
             AstralInfection: "星辉瘟疫"
             SulphurousSea: "硫磺海"

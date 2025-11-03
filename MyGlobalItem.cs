@@ -11,6 +11,7 @@ using Terraria.Localization;
 using System;
 using Terraria.Map;
 using Terraria.ModLoader.IO;
+using Terraria.ObjectData;
 
 namespace MoreObtainingTooltips {
     public class MyGlobalItem : GlobalItem {
@@ -26,6 +27,10 @@ namespace MoreObtainingTooltips {
 
             for (int i = 0; i < countToShow; i++) {
                 int itemId = distinctSources[i].id;
+                if (itemId == -3) {
+                    itemIcons.Append(GetText("UnknownChest"));
+                    continue;
+                }
                 if (Config.ItemShowMode == ItemShowMode.Icon) {
                     itemIcons.Append($"[i:{itemId}]");
                 }
@@ -112,7 +117,6 @@ namespace MoreObtainingTooltips {
             string nameList = string.Join(", ", uniqueNames.Take(maxCount));
             var tooltipText = new StringBuilder(string.Format(format, nameList));
 
-            // .Count() 改为 .Count 效率更高
             if (uniqueNames.Count > maxCount) {
                 tooltipText.Append(Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.More", uniqueNames.Count - maxCount));
             }
@@ -222,7 +226,7 @@ namespace MoreObtainingTooltips {
                     TryAddMethod(string.Format(GetText("ObtainedAfterKilling"), bannerSources[0].num.ToString(), str));
                 }
             }
-
+            
             // Fishing
             if (Config.Fishing.Enabled && FishingSources.TryGetValue(item.type, out var fishingSources)) {
                 if (Config.Fishing.MaxCount == 0) {
@@ -232,7 +236,7 @@ namespace MoreObtainingTooltips {
                     var rarityId = (FishingRarity)fishingInfo.id;
                     string environmentText = fishingInfo.str;
                     string rarityKey = Enum.GetName(typeof(FishingRarity), rarityId);
-                    string rarityText = Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Rarities.{rarityKey}");
+                    string rarityText = (rarityId == FishingRarity.None) ? "" : Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Rarities.{rarityKey}");
                     if (fishingInfo.num > 0) {
                         environmentText += Language.GetTextValue($"Mods.MoreObtainingTooltips.Tooltips.Fishing.Suffix.{Enum.GetName(typeof(FishingSuffix), fishingInfo.num)}");
                     }
@@ -292,11 +296,19 @@ namespace MoreObtainingTooltips {
                     var line = new TooltipLine(Mod, $"ObtainingInfo{i}", obtainingMethods[i]) {
                         OverrideColor = Config.TooltipColor
                     };
-                    tooltips.Insert(insertIndex + i, line);
+                    if(i >= Config.AutomaticallyFoldRows && obtainingMethods.Count - i > 1 && !Main.keyState.IsKeyDown(Keys.LeftShift)) {
+                        var hintLine = new TooltipLine(Mod, "ObtainingHint", Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.PressShiftHintNum", obtainingMethods.Count - i)) {
+                            OverrideColor = Color.Lerp(Config.TooltipColor, Color.White, 0.5f)
+                        };
+                        tooltips.Insert(insertIndex + i, hintLine);
+                        break;
+                    } else {
+                        tooltips.Insert(insertIndex + i, line);
+                    }
                 }
             } else {
                 var hintLine = new TooltipLine(Mod, "ObtainingHint", Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.PressShiftHint")) {
-                    OverrideColor = Config.TooltipColor
+                    OverrideColor = Color.Lerp(Config.TooltipColor, Color.White, 0.5f)
                 };
                 tooltips.Insert(insertIndex, hintLine);
             }

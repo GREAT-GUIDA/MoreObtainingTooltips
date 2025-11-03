@@ -48,7 +48,10 @@ namespace MoreObtainingTooltips
 
         [DefaultValue(typeof(Color), "180, 180, 180, 255")]
         public Color TooltipColor { get; set; }
-
+        [DefaultValue(4)]
+        [Range(0, 12)]
+        public int AutomaticallyFoldRows { get; set; } = 4;
+        
         [DefaultValue(true)]
         public bool ShowShopCondition { get; set; } = true;
 
