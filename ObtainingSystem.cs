@@ -176,28 +176,49 @@ namespace MoreObtainingTooltips {
 
         private Dictionary<int, List<SourceInfo>> LoadSourceDictionary(TagCompound tag, string tagName, Func<string, int> keyConverter, Func<string, int> sourceConverter) {
             var dictionary = new Dictionary<int, List<SourceInfo>>();
-            if (tag.TryGet(tagName, out List<TagCompound> list)) {
-                foreach (var entryTag in list) {
-                    if (entryTag.TryGet("key", out string keyName) &&
-                      entryTag.TryGet("sources", out List<string> sourceNames)) {
 
-                        int key = keyConverter(keyName);
-                        if (key != -1) {
-                            List<SourceInfo> sources = sourceNames
-                                            .Select(name => new SourceInfo(sourceConverter(name)))
-                                            .Where(source => source.id != -1)
-                                    .ToList();
+            if (!tag.TryGet(tagName, out List<TagCompound> list)) {
+                return dictionary;
+            }
 
-                            if (sources.Count > 0) {
-                                dictionary[key] = sources;
-                            }
-                        }
+            foreach (var entryTag in list) {
+                int key = -1;
+
+                if (entryTag.TryGet("key", out object keyObject)) {
+                    if (keyObject is string keyName) {
+                        key = keyConverter(keyName); // 新格式 (string)
+                    } else if (keyObject is int keyId) {
+                        key = keyId; // 旧格式 (int)
                     }
                 }
+
+                if (key == -1) {
+                    continue;
+                }
+
+                List<SourceInfo> sources = null; // 默认 null
+
+                if (entryTag.TryGet("sources", out object sourcesObject)) {
+                    if (sourcesObject is List<string> sourceNames) {
+                        sources = sourceNames
+                            .Select(name => new SourceInfo(sourceConverter(name)))
+                            .Where(source => source.id != -1)
+                            .ToList();
+                    } else if (sourcesObject is List<int> sourceIds) {
+                        sources = sourceIds
+                            .Select(id => new SourceInfo(id))
+                            .Where(source => source.id != -1)
+                            .ToList();
+                    }
+                }
+
+                if (sources != null && sources.Count > 0) {
+                    dictionary[key] = sources;
+                }
             }
+
             return dictionary;
         }
-
         public override void SaveWorldData(TagCompound tag) {
             SaveSourceDictionary(tag, "ChestSources", ChestSources, GetItemSavableString, GetItemSavableString);
             SaveSourceDictionary(tag, "BreakTileSources", BreakTileSources, GetItemSavableString, GetTileSavableString);
@@ -392,7 +413,7 @@ namespace MoreObtainingTooltips {
                     if (chestItemID <= ItemID.None) {
                         if (tile.type == 21) {
                             if(style >= 23 && style <= 27) chestItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, style - 5);
-                            else chestItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, style - 1);
+                            else if (tile.type >= 1) chestItemID = TileLoader.GetItemDropFromTypeAndStyle(tile.type, style - 1);
                         }
                         if(tile.type >= TileID.Count){
                             for (var j = style - 1; j >= 0; j -= 1) {
@@ -406,7 +427,7 @@ namespace MoreObtainingTooltips {
                             locked = true;
                         }
                     }
-                    if (tile.type == 21)
+                    /*if (tile.type == 21)
                         name = Lang.chestType[tile.frameX / 36].Value;
                     else if (tile.type == 467 && tile.frameX / 36 == 4)
                         name = Lang.GetItemNameValue(3988);
@@ -418,7 +439,7 @@ namespace MoreObtainingTooltips {
                         name = TileLoader.DefaultContainerName(tile.type, tile.TileFrameX, tile.TileFrameY);
 
                     if(name == string.Empty) name = Language.GetTextValue("Mods.MoreObtainingTooltips.Tooltips.UnknownChest");
-
+                    */
                     if (chestItemID <= ItemID.None) {
                         chestItemID = -3;
                     }
